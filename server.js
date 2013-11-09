@@ -31,11 +31,15 @@ app.configure(function() {
 });
 
 app.get('/', function(req, res){
-  res.render('index.jade', {});
+  res.render('app.jade', {});
 });
 
-app.get('/test', function(req, res){
-  res.render('test.jade', {});
+app.get('/intro', function(req, res){
+  res.render('intro.jade', {});
+});
+
+app.get('/canvas', function(req, res){
+  res.render('canvas.jade', {});
 });
 
 var fs = require('fs');
