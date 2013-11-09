@@ -135,7 +135,7 @@ GIFEncoder.prototype.finish = function() {
   greater than 20 do not yield significant improvements in speed.
 */
 GIFEncoder.prototype.setQuality = function(quality) {
-  if (quality < 1) quality = 200;
+  if (quality < 1) quality = 30;
   this.sample = quality;
 };
 
