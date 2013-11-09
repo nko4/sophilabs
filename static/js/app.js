@@ -20,6 +20,8 @@ $(function() {
   canvas.width = width;
   canvas.height = height;
   var context = canvas.getContext('2d');
+  context.translate(canvas.width, 0);
+  context.scale(-1, 1);
   
   var colorDiv = $('.color');
   getUserMedia({video: true}, function(stream){

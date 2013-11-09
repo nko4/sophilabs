@@ -84,7 +84,7 @@ app.get('/watch/:id.gif', function(req, res) {
     res.write(data, 'binary');
   });
   req.connection.addListener('close', function() {
-    //client.unsubscribe();
-    //client.end();
+    client.unsubscribe();
+    client.end();
   });
 });
