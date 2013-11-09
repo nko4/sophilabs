@@ -1,9 +1,10 @@
 $(function(){
-  var socket = io.connect('http://localhost');
-
   var frameRate = 10;
   var width = 320;
   var height = 240;
+
+  var socket = io.connect('http://localhost');
+  var encoder = new GIFEncoder(width, height);
 
   var video = $('video')[0];
   video.width = width;
