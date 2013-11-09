@@ -21,31 +21,18 @@ $(function() {
 
     renderTimer = setInterval(function() {
       context.drawImage(video, 0, 0, video.width, video.height);
-      onFrame(canvas);
+      onFrame(context);
     }, Math.round(1000 / frameRate));
   }, function(err){
     console.log(err);
   }); 
 
-  var onFrame = function(canvas) {
-    var context = canvas.getContext("2d");
-    var canvasWidth = canvas.width;
-    var canvasHeight = canvas.height;
-
-    var imageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
+  var onFrame = function(context) {
+    var imageData = context.getImageData(0, 0, width, height);
     worker.postMessage({
       width: width,
       height: height,
       imageData: imageData.data,
     });
   };
-
-  var getColorAtOffset = function(data, offset) {
-    return {
-      red: data[offset],
-      green: data[offset + 1],
-      blue: data[offset + 2],
-      alpha: data[offset + 3]
-    };
-  }
 });
