@@ -25,6 +25,8 @@
             context.drawImage(video, 0, 0, video.width, video.height);
             onFrame(canvas);
           }, Math.round(1000 / frameRate));
+        }, function(err){
+          console.log(err);
         }); 
 
         var onFrame = function(canvas) {
