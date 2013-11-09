@@ -33,7 +33,7 @@ ByteArray.prototype.getData = function() {
 ByteArray.prototype.writeByte = function(val) {
   this.onWrite(val);
   if (this.cursor >= ByteArray.pageSize) this.newPage();
-  this.pages[this.page][this.cursor++] = val;
+  //this.pages[this.page][this.cursor++] = val;
 };
 
 ByteArray.prototype.writeUTFBytes = function(string) {

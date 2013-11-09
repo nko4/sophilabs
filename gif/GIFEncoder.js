@@ -106,13 +106,13 @@ GIFEncoder.prototype.addFrame = function(imageData, firstFrame) {
   this.getImagePixels(); // convert to correct format if necessary
   this.analyzePixels(); // build color table & map pixels
 
-  if (firstFrame) {
-    this.writeLSD(); // logical screen descriptior
-    if (this.repeat >= 0) {
-      // use NS app extension to indicate reps
-      this.writeNetscapeExt();
-    }
-  }
+  // if (firstFrame) {
+  //   this.writeLSD(); // logical screen descriptior
+  //   if (this.repeat >= 0) {
+  //     // use NS app extension to indicate reps
+  //     this.writeNetscapeExt();
+  //   }
+  // }
 
   this.writeGraphicCtrlExt(); // write graphic control extension
   this.writeImageDesc(firstFrame); // image descriptor

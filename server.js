@@ -6,6 +6,8 @@ var http = require('http');
 var socket = require('socket.io');
 var redis = require('redis');
 
+var GIFEncoder = require('./gif/GIFEncoder.js');
+
 var app = express();
 var server = http.createServer(app);
 var client = redis.createClient();
@@ -52,13 +54,23 @@ io.sockets.on('connection', function(socket) {
 
 app.get('/watch/:id.gif', function(req, res){
   var client = redis.createClient();
+  var encoder = new GIFEncoder(320, 240);
 
   res.setHeader('Content-Type', 'image/gif');
-  res.send();
+  
+  encoder.setFrameRate(10);
+  encoder.setRepeat(0);
+  encoder.writeLSD(); // logical screen descriptior
+  // use NS app extension to indicate reps
+  encoder.writeNetscapeExt();
+
+  encoder.stream().onWrite(function(data){
+    res.send(data);
+  });
 
   client.subscribe(req.params.id);
   client.on('message', function(channel, data){
-    res.write(new Buffer(data, 'base64'));
+    res.send(new Buffer(data, 'base64'));
   });
   req.connection.addListener('close', function(){
     client.unsubscribe();
