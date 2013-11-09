@@ -42,7 +42,6 @@ app.get('/canvas', function(req, res){
   res.render('canvas.jade', {});
 });
 
-var streamdata = '';
 
 io.sockets.on('connection', function(socket) {
   var gifId = '';
@@ -58,8 +57,8 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('frame', function(data) {
-    //client.publish(gifId, data);
-    streamdata+= data;
+    client.publish(gifId, data);
+    //streamdata+= data;
   });
 });
 
@@ -72,18 +71,18 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.stream().onWrite(function(data) {
     res.write(String.fromCharCode(data), 'binary');
   });
-  encoder.setFrameRate(1000);
+  encoder.setFrameRate(5);
   encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
-  //client.subscribe(req.params.id);
-  //client.on('message', function(channel, data) {
-  //  res.write(data, 'binary');
-  //});
-  res.write(streamdata, 'binary');
+  client.subscribe(req.params.id);
+  client.on('message', function(channel, data) {
+    console.log("received frame");
+    res.write(data, 'binary');
+  });
   req.connection.addListener('close', function() {
     //client.unsubscribe();
     //client.end();
