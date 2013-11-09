@@ -135,7 +135,7 @@ GIFEncoder.prototype.finish = function() {
   greater than 20 do not yield significant improvements in speed.
 */
 GIFEncoder.prototype.setQuality = function(quality) {
-  if (quality < 1) quality = 1;
+  if (quality < 1) quality = 20;
   this.sample = quality;
 };
 
@@ -309,7 +309,7 @@ GIFEncoder.prototype.writeLSD = function() {
 
 GIFEncoder.prototype.writeGlobalPalette = function() {
   for (var i = 0; i < 6; i++) {
-    this.out.writeByte(0xFF);
+    this.out.writeByte(0x00);
   }
 };
 
@@ -318,7 +318,7 @@ GIFEncoder.prototype.writeGlobalPalette = function() {
 */
 GIFEncoder.prototype.writeNetscapeExt = function() {
   this.out.writeByte(0x21); // extension introducer
-  this.out.writeByte(0xf9); // app extension label
+  this.out.writeByte(0xff); // app extension label
   this.out.writeByte(11); // block size
   this.out.writeUTFBytes('NETSCAPE2.0'); // app id + auth code
   this.out.writeByte(3); // sub-block size

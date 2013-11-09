@@ -42,18 +42,7 @@ app.get('/canvas', function(req, res){
   res.render('canvas.jade', {});
 });
 
-var fs = require('fs');
-var stream = fs.createWriteStream('mygif.gif');
-var encoder = new GIFEncoder(320, 240);
-encoder.stream().onWrite(function(data){
-  stream.write(String.fromCharCode(data), 'binary');
-});
-encoder.setFrameRate(10);
-encoder.setRepeat(0);
-encoder.writeHeader();
-encoder.writeLSD(); // logical screen descriptior
-encoder.writeGlobalPalette();
-
+var streamdata = '';
 
 io.sockets.on('connection', function(socket) {
   var gifId = '';
@@ -68,47 +57,35 @@ io.sockets.on('connection', function(socket) {
     id: gifId
   });
 
-   //encoder.writeNetscapeExt(); // use NS app extension to indicate reps
-
-
   socket.on('frame', function(data) {
-
-    stream.write(data, 'binary');
-  
-    //console.log((data).toString(16));
-    //var a = new Buffer(data).toString('base64');
-    //console.log(a);
-    client.publish(gifId, data);
-    //var b = new Buffer(a, 'base64').toString('binary');
-    //console.log(data.charCodeAt(0).toString(16) + '-' + b.charCodeAt(0).toString(16));
+    //client.publish(gifId, data);
+    streamdata+= data;
   });
 });
 
-app.get('/watch/:id.gif', function(req, res){
+app.get('/watch/:id.gif', function(req, res) {
   var client = redis.createClient();
   var encoder = new GIFEncoder(320, 240);
 
   res.setHeader('Content-Type', 'image/gif');
   
-  encoder.stream().onWrite(function(data){
+  encoder.stream().onWrite(function(data) {
     res.write(String.fromCharCode(data), 'binary');
   });
-  encoder.setFrameRate(10);
-  encoder.setRepeat(0);
+  encoder.setFrameRate(1000);
+  encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
-  //encoder.writeNetscapeExt(); // use NS app extension to indicate reps
+  encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
   client.subscribe(req.params.id);
-  client.on('message', function(channel, data){
-    //console.log(new Buffer(data, 'base64'));
-    //var b = new Buffer(data, 'base64').toString('binary');
-    res.write(data, 'binary');
-  });
-  req.connection.addListener('close', function(){
+  //client.on('message', function(channel, data) {
+  //  res.write(data, 'binary');
+  //});
+  res.write(streamdata, 'binary');
+  req.connection.addListener('close', function() {
     //client.unsubscribe();
     //client.end();
   });
 });
-
