@@ -1,10 +1,16 @@
 $(function() {
 
-  var frameRate = 1;
+  var frameRate = 5;
   var width = 320;
   var height = 240;
+  var socket = io.connect('ws://localhost');
 
   var worker = new Worker('js/worker.js');
+  worker.addEventListener('message', function(e) {
+    var frame = e.data;
+    console.log("got frame " + frame.length);
+    socket.emit('frame', frame);
+  });
 
   var video = $('video')[0];
   video.width = width;

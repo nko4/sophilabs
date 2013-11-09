@@ -71,7 +71,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.stream().onWrite(function(data) {
     res.write(String.fromCharCode(data), 'binary');
   });
-  encoder.setFrameRate(1000);
+  encoder.setFrameRate(5);
   encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
@@ -80,6 +80,7 @@ app.get('/watch/:id.gif', function(req, res) {
 
   client.subscribe(req.params.id);
   client.on('message', function(channel, data) {
+    console.log("received frame");
     res.write(data, 'binary');
   });
   req.connection.addListener('close', function() {
