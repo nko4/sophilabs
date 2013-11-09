@@ -11,16 +11,29 @@
       soundManager.createSound({
         id: 1,
         url: '/sound/intro.mp3',
+        autoLoad: true,
         onload: function(){
           var explosion = new Image();
           explosion.onload = function(){
-            console.log('aaa');
+            var logo = new Image();
+            logo.onload = function(){
+              var volume = 100;
+              soundManager.play(1, {volume: volume, position: 21000});
+              setTimeout(function(){
+                setTimeout(function stop(){
+                    volume -= 1;
+                    if (volume <= 0) {
+                      soundManager.stopAll();
+                    } else {
+                      soundManager.setVolume(1, volume);
+                      setTimeout(stop, 20);
+                    }
+                }, 1);
+              }, 5000);
+            };
+            logo.src = '/img/macgifer.png';
           };
           explosion.src = '/img/explosion.gif';
-          soundManager.play(1, {volume: 100, position: 21000});
-          setTimeout(function(){
-            soundManager.stopAll();
-          }, 20000);
         }
       });
     }
