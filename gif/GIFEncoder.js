@@ -135,7 +135,7 @@ GIFEncoder.prototype.finish = function() {
   greater than 20 do not yield significant improvements in speed.
 */
 GIFEncoder.prototype.setQuality = function(quality) {
-  if (quality < 1) quality = 1;
+  if (quality < 1) quality = 20;
   this.sample = quality;
 };
 
@@ -300,11 +300,17 @@ GIFEncoder.prototype.writeLSD = function() {
     0x00 | // 1 : global color table flag = 1 (gct used)
     0x70 | // 2-4 : color resolution = 7
     0x00 | // 5 : gct sort flag = 0
-    this.palSize // 6-8 : gct size
+    0x00 // 6-8 : gct size
   );
 
   this.out.writeByte(0); // background color index
   this.out.writeByte(0); // pixel aspect ratio - assume 1:1
+};
+
+GIFEncoder.prototype.writeGlobalPalette = function() {
+  for (var i = 0; i < 6; i++) {
+    this.out.writeByte(0x00);
+  }
 };
 
 /*

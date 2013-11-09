@@ -42,6 +42,8 @@ app.get('/canvas', function(req, res){
   res.render('canvas.jade', {});
 });
 
+var streamdata = '';
+
 io.sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -54,34 +56,36 @@ io.sockets.on('connection', function(socket) {
   socket.emit('new_id', {
     id: gifId
   });
+
   socket.on('frame', function(data) {
-    client.publish(gifId, new Buffer(data).toString('base64'));
+    //client.publish(gifId, data);
+    streamdata+= data;
   });
 });
 
-app.get('/watch/:id.gif', function(req, res){
+app.get('/watch/:id.gif', function(req, res) {
   var client = redis.createClient();
   var encoder = new GIFEncoder(320, 240);
 
   res.setHeader('Content-Type', 'image/gif');
   
-  encoder.stream().onWrite(function(data){
-    res.write(String.fromCharCode(data));
+  encoder.stream().onWrite(function(data) {
+    res.write(String.fromCharCode(data), 'binary');
   });
-  encoder.setFrameRate(10);
-  encoder.setRepeat(0);
+  encoder.setFrameRate(1000);
+  encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
+  encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
-  client.subscribe(req.params.id);
-  client.on('message', function(channel, data){
-    //console.log(new Buffer(data, 'base64'));
-    res.write(new Buffer(data, 'base64').toString('binary'));
-  });
-  req.connection.addListener('close', function(){
+  //client.subscribe(req.params.id);
+  //client.on('message', function(channel, data) {
+  //  res.write(data, 'binary');
+  //});
+  res.write(streamdata, 'binary');
+  req.connection.addListener('close', function() {
     //client.unsubscribe();
     //client.end();
   });
 });
-

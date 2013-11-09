@@ -1,16 +1,10 @@
-$(function(){
-  var frameRate = 10;
+$(function() {
+
+  var frameRate = 1;
   var width = 320;
   var height = 240;
 
-  var socket = io.connect('http://localhost');
-  var encoder = new GIFEncoder(width, height);
-  encoder.setFrameRate(10);
-  encoder.setRepeat(0);
-
-  encoder.stream().onWrite(function(val) {
-      socket.emit('frame', String.fromCharCode(val));
-  });
+  var worker = new Worker('js/worker.js');
 
   var video = $('video')[0];
   video.width = width;
@@ -39,18 +33,11 @@ $(function(){
     var canvasHeight = canvas.height;
 
     var imageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
-    encoder.addFrame(imageData.data);
-
-    var color = getColorAtOffset(imageData.data, 3000);
-    colorDiv.css('background-color', 'rgb('+color.red+','+color.green+','+color.blue+')');
-    for (var y = 0; y < canvasHeight; y += 2) { // every other row because letters are not square
-      for (var x = 0; x < canvasWidth; x++) {
-        // get each pixel's brightness and output corresponding character
-        var offset = (y * canvasWidth + x) * 4;
-        var color = getColorAtOffset(imageData.data, offset);
-        
-      }
-    }
+    worker.postMessage({
+      width: width,
+      height: height,
+      imageData: imageData.data,
+    });
   };
 
   var getColorAtOffset = function(data, offset) {
