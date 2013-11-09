@@ -58,19 +58,18 @@ app.get('/watch/:id.gif', function(req, res){
 
   res.setHeader('Content-Type', 'image/gif');
   
+  encoder.stream().onWrite(function(data){
+    res.write(String.fromCharCode(data));
+  });
   encoder.setFrameRate(10);
   encoder.setRepeat(0);
   encoder.writeLSD(); // logical screen descriptior
-  // use NS app extension to indicate reps
-  encoder.writeNetscapeExt();
-
-  encoder.stream().onWrite(function(data){
-    res.send(data);
-  });
+  encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
   client.subscribe(req.params.id);
   client.on('message', function(channel, data){
-    res.send(new Buffer(data, 'base64'));
+    console.log(data);
+    res.write(new Buffer(data, 'base64'));
   });
   req.connection.addListener('close', function(){
     client.unsubscribe();
