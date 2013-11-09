@@ -38,17 +38,6 @@ $(function() {
       height: height,
       imageData: imageData.data,
     });
-
-    var color = getColorAtOffset(imageData.data, 3000);
-    colorDiv.css('background-color', 'rgb('+color.red+','+color.green+','+color.blue+')');
-    for (var y = 0; y < canvasHeight; y += 2) { // every other row because letters are not square
-      for (var x = 0; x < canvasWidth; x++) {
-        // get each pixel's brightness and output corresponding character
-        var offset = (y * canvasWidth + x) * 4;
-        var color = getColorAtOffset(imageData.data, offset);
-        
-      }
-    }
   };
 
   var getColorAtOffset = function(data, offset) {

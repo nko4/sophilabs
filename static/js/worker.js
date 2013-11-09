@@ -13,7 +13,7 @@ onmessage = function(e) {
   var data = e.data;
 
   if (!started) {
-    socket = io.connect('http://localhost');
+    socket = io.connect('ws://localhost');
 
     encoder = new GIFEncoder(data.width, data.height);
     encoder.setFrameRate(1000);

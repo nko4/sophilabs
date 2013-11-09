@@ -79,7 +79,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
-  client.subscribe(req.params.id);
+  //client.subscribe(req.params.id);
   //client.on('message', function(channel, data) {
   //  res.write(data, 'binary');
   //});
