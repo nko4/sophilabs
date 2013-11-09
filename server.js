@@ -99,6 +99,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
+  encoder.addFrame(adjustment);
 
   client.psubscribe('*.' + req.params.id);
 
