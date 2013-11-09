@@ -37,7 +37,6 @@ app.get('/test', function(req, res){
 });
 
 io.sockets.on('connection', function(socket) {
-
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for( var i=0; i < 5; i++ )

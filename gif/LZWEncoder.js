@@ -206,4 +206,6 @@ function LZWEncoder(width, height, pixels, colorDepth) {
   this.encode = encode;
 }
 
-module.exports = LZWEncoder;
+if (typeof module !== 'undefined') {
+    module.exports = LZWEncoder;
+}

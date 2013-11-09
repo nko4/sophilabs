@@ -50,4 +50,6 @@ ByteArray.prototype.onWrite = function(callback) {
   this.onWrite = callback;
 };
 
-module.exports = ByteArray;
+if (typeof module !== 'undefined') {
+    module.exports = ByteArray;
+}

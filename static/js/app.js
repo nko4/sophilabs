@@ -1,4 +1,6 @@
 $(function(){
+  var socket = io.connect('http://localhost');
+
   var frameRate = 10;
   var width = 320;
   var height = 240;

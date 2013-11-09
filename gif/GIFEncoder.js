@@ -7,9 +7,11 @@
   Johan Nordberg (JS version - code@johan-nordberg.com)
 */
 
-var NeuQuant = require('./TypedNeuQuant.js');
-var LZWEncoder = require('./LZWEncoder.js');
-var ByteArray = require('./ByteArray.js');
+if (typeof module !== 'undefined') {
+    var NeuQuant = require('./TypedNeuQuant.js');
+    var LZWEncoder = require('./LZWEncoder.js');
+    var ByteArray = require('./ByteArray.js');
+}
 
 function GIFEncoder(width, height) {
   // image size
@@ -356,4 +358,6 @@ GIFEncoder.prototype.stream = function() {
   return this.out;
 };
 
-module.exports = GIFEncoder;
+if (typeof module !== 'undefined') {
+    module.exports = GIFEncoder;
+}
