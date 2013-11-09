@@ -1,7 +1,3 @@
-body {
-    background-color: #000;
-}
-
 video {
     transform: rotateY(180deg);
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */
