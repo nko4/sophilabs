@@ -67,11 +67,8 @@ ChannelEvent.prototype.toString() {
 io.sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  /*
     for( var i=0; i < 5; i++ )
         gifId += possible.charAt(Math.floor(Math.random() * possible.length));
-  */
-  gifId = 'asdf';
 
   socket.emit('new_id', {
     id: gifId

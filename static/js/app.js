@@ -3,12 +3,16 @@ $(function() {
   var frameRate = 1;
   var width = 320;
   var height = 240;
-  var socket = io.connect('ws://localhost');
+  var socket = io.connect('ws://' + window.location.hostname);
 
+  socket.on('new_id', function(data){
+    $('.url a')
+      .attr('href', window.location.origin + '/watch/' + data.id + '.gif')
+      .text('Click here!');
+  });
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
-    console.log("got frame " + frame.length);
     socket.emit('frame', frame);
   });
 
@@ -23,7 +27,6 @@ $(function() {
   context.translate(canvas.width, 0);
   context.scale(-1, 1);
   
-  var colorDiv = $('.color');
   getUserMedia({video: true}, function(stream){
     video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
 
