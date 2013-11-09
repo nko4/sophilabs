@@ -3,7 +3,7 @@ $(function() {
   var frameRate = 1;
   var width = 320;
   var height = 240;
-  var socket = io.connect('ws://localhost');
+  var socket = io.connect('ws://' + window.location.hostname);
 
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
@@ -23,7 +23,6 @@ $(function() {
   context.translate(canvas.width, 0);
   context.scale(-1, 1);
   
-  var colorDiv = $('.color');
   getUserMedia({video: true}, function(stream){
     video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
 
