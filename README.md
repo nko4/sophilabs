@@ -1,7 +1,6 @@
 # MacGifer
 
-
-->![awesomeness](http://i28.tinypic.com/dhfitg.gif)<-
+![awesomeness](http://i28.tinypic.com/dhfitg.gif)
 
 
 
