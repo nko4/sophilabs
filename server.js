@@ -41,14 +41,17 @@ app.get('/test', function(req, res){
 io.sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  /*
     for( var i=0; i < 5; i++ )
         gifId += possible.charAt(Math.floor(Math.random() * possible.length));
+  */
+  gifId = 'asdf';
 
   socket.emit('new_id', {
     id: gifId
   });
   socket.on('frame', function(data) {
-    redis.publish(gifId, new Buffer(data).toString('base64'));
+    client.publish(gifId, new Buffer(data).toString('base64'));
   });
 });
 
@@ -63,17 +66,18 @@ app.get('/watch/:id.gif', function(req, res){
   });
   encoder.setFrameRate(10);
   encoder.setRepeat(0);
+  encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
   client.subscribe(req.params.id);
   client.on('message', function(channel, data){
-    console.log(data);
-    res.write(new Buffer(data, 'base64'));
+    //console.log(new Buffer(data, 'base64'));
+    res.write(new Buffer(data, 'base64').toString('binary'));
   });
   req.connection.addListener('close', function(){
-    client.unsubscribe();
-    client.end();
+    //client.unsubscribe();
+    //client.end();
   });
 });
 

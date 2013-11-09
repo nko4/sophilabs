@@ -5,10 +5,11 @@ $(function(){
 
   var socket = io.connect('http://localhost');
   var encoder = new GIFEncoder(width, height);
+  encoder.setFrameRate(10);
+  encoder.setRepeat(0);
 
   encoder.stream().onWrite(function(val) {
-      console.log(val);
-      socket.emit('frame', val);
+      socket.emit('frame', String.fromCharCode(val));
   });
 
   var video = $('video')[0];
