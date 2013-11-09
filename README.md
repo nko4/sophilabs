@@ -1,3 +1,10 @@
+# MacGifer
+
+
+->![awesomeness](http://i28.tinypic.com/dhfitg.gif)<-
+
+
+
 ## Quick Start
 
 ~~~sh
