@@ -3,6 +3,15 @@ $(function(){
   var width = 320;
   var height = 240;
 
+  var socket = io.connect('http://localhost');
+  var encoder = new GIFEncoder(width, height);
+  encoder.setFrameRate(10);
+  encoder.setRepeat(0);
+
+  encoder.stream().onWrite(function(val) {
+      socket.emit('frame', String.fromCharCode(val));
+  });
+
   var video = $('video')[0];
   video.width = width;
   video.height = height;
@@ -30,6 +39,7 @@ $(function(){
     var canvasHeight = canvas.height;
 
     var imageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
+    encoder.addFrame(imageData.data);
 
     var color = getColorAtOffset(imageData.data, 3000);
     colorDiv.css('background-color', 'rgb('+color.red+','+color.green+','+color.blue+')');

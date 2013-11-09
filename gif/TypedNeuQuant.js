@@ -428,4 +428,6 @@ function NeuQuant(pixels, samplefac) {
   this.lookupRGB = inxsearch;
 }
 
-module.exports = NeuQuant;
+if (typeof module !== 'undefined') {
+    module.exports = NeuQuant;
+}

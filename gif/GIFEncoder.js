@@ -7,9 +7,11 @@
   Johan Nordberg (JS version - code@johan-nordberg.com)
 */
 
-var NeuQuant = require('./TypedNeuQuant.js');
-var LZWEncoder = require('./LZWEncoder.js');
-var ByteArray = require('./ByteArray.js');
+if (typeof module !== 'undefined') {
+    var NeuQuant = require('./TypedNeuQuant.js');
+    var LZWEncoder = require('./LZWEncoder.js');
+    var ByteArray = require('./ByteArray.js');
+}
 
 function GIFEncoder(width, height) {
   // image size
@@ -96,24 +98,23 @@ GIFEncoder.prototype.setTransparent = function(color) {
   Adds next GIF frame. The frame is not written immediately, but is
   actually deferred until the next frame is received so that timing
   data can be inserted.  Invoking finish() flushes all frames.
-  Add LSD if firstFrame is set to true.
 */
-GIFEncoder.prototype.addFrame = function(imageData, firstFrame) {
+GIFEncoder.prototype.addFrame = function(imageData) {
   this.image = imageData;
 
   this.getImagePixels(); // convert to correct format if necessary
   this.analyzePixels(); // build color table & map pixels
 
-  if (firstFrame) {
-    this.writeLSD(); // logical screen descriptior
-    if (this.repeat >= 0) {
-      // use NS app extension to indicate reps
-      this.writeNetscapeExt();
-    }
-  }
+  // if (firstFrame) {
+  //   this.writeLSD(); // logical screen descriptior
+  //   if (this.repeat >= 0) {
+  //     // use NS app extension to indicate reps
+  //     this.writeNetscapeExt();
+  //   }
+  // }
 
   this.writeGraphicCtrlExt(); // write graphic control extension
-  this.writeImageDesc(firstFrame); // image descriptor
+  this.writeImageDesc(); // image descriptor
   this.writePalette(); // local color table
   this.writePixels(); // encode and write pixel data
 };
@@ -269,27 +270,21 @@ GIFEncoder.prototype.writeGraphicCtrlExt = function() {
 /*
   Writes Image Descriptor
 */
-GIFEncoder.prototype.writeImageDesc = function(firstFrame) {
+GIFEncoder.prototype.writeImageDesc = function() {
   this.out.writeByte(0x2c); // image separator
   this.writeShort(0); // image position x,y = 0,0
   this.writeShort(0);
   this.writeShort(this.width); // image size
   this.writeShort(this.height);
 
-  // packed fields
-  if (firstFrame) {
-    // no LCT - GCT is used for first (or only) frame
-    this.out.writeByte(0);
-  } else {
-    // specify normal LCT
-    this.out.writeByte(
-      0x80 | // 1 local color table 1=yes
-      0 | // 2 interlace - 0=no
-      0 | // 3 sorted - 0=no
-      0 | // 4-5 reserved
-      this.palSize // 6-8 size of color table
-    );
-  }
+  // specify normal LCT
+  this.out.writeByte(
+    0x80 | // 1 local color table 1=yes
+    0 | // 2 interlace - 0=no
+    0 | // 3 sorted - 0=no
+    0 | // 4-5 reserved
+    this.palSize // 6-8 size of color table
+  );
 };
 
 /*
@@ -356,4 +351,6 @@ GIFEncoder.prototype.stream = function() {
   return this.out;
 };
 
-module.exports = GIFEncoder;
+if (typeof module !== 'undefined') {
+    module.exports = GIFEncoder;
+}

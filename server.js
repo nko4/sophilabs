@@ -4,9 +4,13 @@ require('nko')('DQ-GoMjZi2jjKUth');
 var express = require('express');
 var http = require('http');
 var socket = require('socket.io');
+var redis = require('redis');
+
+var GIFEncoder = require('./gif/GIFEncoder.js');
 
 var app = express();
 var server = http.createServer(app);
+var client = redis.createClient();
 
 var isProduction = (process.env.NODE_ENV === 'production');
 var port = (isProduction ? 80 : 8000);
@@ -35,11 +39,45 @@ app.get('/test', function(req, res){
 });
 
 io.sockets.on('connection', function(socket) {
+  var gifId = '';
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   /*
-  socket.emit('news', {
-    hello: 'world'
+    for( var i=0; i < 5; i++ )
+        gifId += possible.charAt(Math.floor(Math.random() * possible.length));
+  */
+  gifId = 'asdf';
+
+  socket.emit('new_id', {
+    id: gifId
   });
-  socket.on('my other event', function(data) {
-    console.log(data);
-  });*/
+  socket.on('frame', function(data) {
+    client.publish(gifId, new Buffer(data).toString('base64'));
+  });
 });
+
+app.get('/watch/:id.gif', function(req, res){
+  var client = redis.createClient();
+  var encoder = new GIFEncoder(320, 240);
+
+  res.setHeader('Content-Type', 'image/gif');
+  
+  encoder.stream().onWrite(function(data){
+    res.write(String.fromCharCode(data));
+  });
+  encoder.setFrameRate(10);
+  encoder.setRepeat(0);
+  encoder.writeHeader();
+  encoder.writeLSD(); // logical screen descriptior
+  encoder.writeNetscapeExt(); // use NS app extension to indicate reps
+
+  client.subscribe(req.params.id);
+  client.on('message', function(channel, data){
+    //console.log(new Buffer(data, 'base64'));
+    res.write(new Buffer(data, 'base64').toString('binary'));
+  });
+  req.connection.addListener('close', function(){
+    //client.unsubscribe();
+    //client.end();
+  });
+});
+
