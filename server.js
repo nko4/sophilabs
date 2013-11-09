@@ -8,6 +8,7 @@ var redis = require('redis');
 
 var app = express();
 var server = http.createServer(app);
+var client = redis.createClient();
 
 var isProduction = (process.env.NODE_ENV === 'production');
 var port = (isProduction ? 80 : 8000);
@@ -36,17 +37,26 @@ app.get('/test', function(req, res){
 });
 
 io.sockets.on('connection', function(socket) {
-  /*
-  socket.emit('news', {
-    hello: 'world'
+
+  var gifId = '';
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for( var i=0; i < 5; i++ )
+        gifId += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  socket.emit('new_id', {
+    id: gifId
   });
-  socket.on('my other event', function(data) {
-    console.log(data);
-  });*/
+  socket.on('frame', function(data) {
+    redis.publish(gifId, new Buffer(data).toString('base64'));
+  });
 });
 
 app.get('/watch/:id.gif', function(req, res){
   var client = redis.createClient();
+
+  res.setHeader('Content-Type', 'image/gif');
+  res.send();
+
   client.subscribe(req.params.id);
   client.on('message', function(channel, data){
     res.write(new Buffer(data, 'base64'));
