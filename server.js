@@ -18,7 +18,7 @@ server.listen(port);
 //generic config
 app.configure(function() {
   app.set('views', __dirname + '/templates');
-  app.set('view engine', 'ejs');
+  app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.session({ secret: 'topsecret' }));
@@ -27,8 +27,12 @@ app.configure(function() {
   app.use(express.static(__dirname + '/static'));
 });
 
-app.get('/', function(req, res) {
-  res.render('index.ejs', {});
+app.get('/', function(req, res){
+  res.render('index.jade', {});
+});
+
+app.get('/test', function(req, res){
+  res.render('test.jade', {});
 });
 
 io.sockets.on('connection', function(socket) {
