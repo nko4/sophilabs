@@ -5,10 +5,14 @@ $(function() {
   var height = 240;
   var socket = io.connect('ws://' + window.location.hostname);
 
+  socket.on('new_id', function(data){
+    $('.url a')
+      .attr('href', window.location.origin + '/watch/' + data.id + '.gif')
+      .text('Click here!');
+  });
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
-    console.log("got frame " + frame.length);
     socket.emit('frame', frame);
   });
 

@@ -46,11 +46,8 @@ app.get('/canvas', function(req, res){
 io.sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  /*
     for( var i=0; i < 5; i++ )
         gifId += possible.charAt(Math.floor(Math.random() * possible.length));
-  */
-  gifId = 'asdf';
 
   socket.emit('new_id', {
     id: gifId
@@ -58,7 +55,6 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('frame', function(data) {
     client.publish(gifId, data);
-    //streamdata+= data;
   });
 });
 
