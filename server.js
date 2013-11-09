@@ -4,6 +4,7 @@ require('nko')('DQ-GoMjZi2jjKUth');
 var express = require('express');
 var http = require('http');
 var socket = require('socket.io');
+var redis = require('redis');
 
 var app = express();
 var server = http.createServer(app);
@@ -39,3 +40,16 @@ io.sockets.on('connection', function(socket) {
     console.log(data);
   });*/
 });
+
+app.get('/watch/:id.gif', function(req, res){
+  var client = redis.createClient();
+  client.subscribe(req.params.id);
+  client.on('message', function(channel, data){
+    res.write(new Buffer(data, 'base64'));
+  });
+  req.connection.addListener('close', function(){
+    client.unsubscribe();
+    client.end();
+  });
+});
+
