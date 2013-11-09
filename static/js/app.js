@@ -1,8 +1,8 @@
 $(function() {
 
   var frameRate = 1;
-  var width = 320;
-  var height = 240;
+  var width = 240;
+  var height = 180;
   var socket = io.connect('ws://' + window.location.hostname);
 
   socket.on('new_id', function(data){
@@ -13,6 +13,7 @@ $(function() {
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
+    console.log(frame.length);
     socket.emit('frame', frame);
   });
 

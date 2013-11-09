@@ -85,7 +85,7 @@ io.sockets.on('connection', function(socket) {
 
 app.get('/watch/:id.gif', function(req, res) {
   var client = redis.createClient();
-  var encoder = new GIFEncoder(320, 240);
+  var encoder = new GIFEncoder(240, 180);
 
   res.setHeader('Content-Type', 'image/gif');
   
