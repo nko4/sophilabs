@@ -13,7 +13,8 @@
   "dependencies": {
     "nko": "*",
     "express": "3.4.4",
-    "ejs": "0.8.4"
+    "ejs": "0.8.4",
+    "socket.io": "0.9.16"
   },
   "engines": {
     "node": "0.10.x"
