@@ -1,6 +1,22 @@
+@font-face {
+    font-family: 'impacto';
+    src: url('../font/impact.eot');
+    src: url('../font/impact.eot?#iefix') format('embedded-opentype'),
+         url('../font/impact.woff') format('woff'),
+         url('../font/impact.ttf') format('truetype'),
+         url('../font/impact.svg#impactregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 video {
     transform: rotateY(180deg);
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */
     -moz-transform:rotateY(180deg); /* Firefox */
+}
+
+/** temp **/
+canvas {
 }
 

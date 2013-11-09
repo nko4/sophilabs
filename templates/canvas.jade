@@ -1,4 +1,12 @@
 extends base
 
+block css
+    link(rel='stylesheet', href='/css/app.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Coda:800')
+
 block content
-    canvas
+    div HOLA
+    canvas(height=400, width=400)
+
+block js
+    script(src='/js/canvas.js')
