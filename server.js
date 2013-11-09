@@ -5,6 +5,7 @@ var express = require('express');
 var http = require('http');
 var socket = require('socket.io');
 var redis = require('redis');
+var fs = require('fs');
 
 var GIFEncoder = require('./gif/GIFEncoder.js');
 
@@ -17,6 +18,16 @@ var port = (isProduction ? 80 : 8000);
 
 var io = socket.listen(server);
 server.listen(port);
+
+var file = __dirname + '/gif/adjustment.json';
+var adjustment = null;
+fs.readFile(file, 'utf8', function(err, data) {
+  if (err) {
+    console.log('Error: ' + err);
+    return;
+  }
+  adjustment = JSON.parse(data);
+});
 
 //generic config
 app.configure(function() {
@@ -43,6 +54,16 @@ app.get('/canvas', function(req, res){
 });
 
 
+/*
+var ChannelEvent = function(type, value) {
+    this.type = type;
+    this.value = value;
+};
+
+ChannelEvent.prototype.toString() {
+    return this.type + ':' + this.value;
+};*/
+
 io.sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -57,8 +78,11 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('frame', function(data) {
-    client.publish(gifId, data);
-    //streamdata+= data;
+    client.publish('frame.' + gifId, data);
+  });
+
+  socket.on('disconnect', function() {
+    client.publish('event.' + gifId, 'disconnect');
   });
 });
 
@@ -71,6 +95,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.stream().onWrite(function(data) {
     res.write(String.fromCharCode(data), 'binary');
   });
+
   encoder.setFrameRate(20);
   encoder.setRepeat(-1);
   encoder.writeHeader();
@@ -78,11 +103,26 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
 
-  client.subscribe(req.params.id);
-  client.on('message', function(channel, data) {
-    console.log("received frame");
-    res.write(data, 'binary');
+  client.psubscribe('*.' + req.params.id);
+
+  client.on('pmessage', function(pattern, channel, data) {
+    channel = channel.split('.');
+
+    var type = channel[0];
+    var gifId = channel[1];
+
+    if (type == 'frame') {
+      console.log('received frame');
+      res.write(data, 'binary');
+
+    } else if (type == 'event') {
+      console.log('received event: ' + data);
+      if (data == 'disconnect') {
+        encoder.addFrame(adjustment);
+      }
+    }
   });
+
   req.connection.addListener('close', function() {
     client.unsubscribe();
     client.end();
