@@ -6,7 +6,7 @@ function ByteArray() {
   this.page = -1;
   this.pages = [];
   this.newPage();
-  this.onWrite = function(val) {};
+  this.onWriteCallback = function(val) {};
 }
 
 ByteArray.pageSize = 4096;
@@ -31,7 +31,7 @@ ByteArray.prototype.getData = function() {
 };
 
 ByteArray.prototype.writeByte = function(val) {
-  this.onWrite(val);
+  this.onWriteCallback(val);
   if (this.cursor >= ByteArray.pageSize) this.newPage();
   //this.pages[this.page][this.cursor++] = val;
 };
@@ -47,7 +47,7 @@ ByteArray.prototype.writeBytes = function(array, offset, length) {
 };
 
 ByteArray.prototype.onWrite = function(callback) {
-  this.onWrite = callback;
+  this.onWriteCallback = callback;
 };
 
 if (typeof module !== 'undefined') {

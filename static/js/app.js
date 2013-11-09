@@ -6,6 +6,11 @@ $(function(){
   var socket = io.connect('http://localhost');
   var encoder = new GIFEncoder(width, height);
 
+  encoder.stream().onWrite(function(val) {
+      console.log(val);
+      socket.emit('frame', val);
+  });
+
   var video = $('video')[0];
   video.width = width;
   video.height = height;
@@ -33,6 +38,7 @@ $(function(){
     var canvasHeight = canvas.height;
 
     var imageData = context.getImageData(0, 0, canvasWidth, canvasHeight);
+    encoder.addFrame(imageData.data);
 
     var color = getColorAtOffset(imageData.data, 3000);
     colorDiv.css('background-color', 'rgb('+color.red+','+color.green+','+color.blue+')');
