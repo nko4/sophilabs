@@ -8,8 +8,12 @@ $(function(){
   encoder.setFrameRate(10);
   encoder.setRepeat(0);
 
+  var i = 0;
   encoder.stream().onWrite(function(val) {
+      if (i == 0) 
+          console.log((val).toString(16));
       socket.emit('frame', String.fromCharCode(val));
+      i++;
   });
 
   var video = $('video')[0];
