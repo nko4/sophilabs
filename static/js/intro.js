@@ -8,6 +8,7 @@
     debugFlash: false,
     debugMode: false,
     onready: function() {
+      var t = (new Date()).getTime();
       soundManager.createSound({
         id: 1,
         url: '/sound/intro.mp3',
@@ -19,7 +20,9 @@
             logo.onload = function(){
               var background = document.createElement('div');
               background.className = 'background';
-              background.appendChild(document.createElement('div'));
+              var div = document.createElement('div');
+              div.style.backgroundImage = 'url(/img/explosion.gif?t=' + t  + ')';
+              background.appendChild(div);
               document.body.insertBefore(background, document.body.firstChild);
               var volume = 100;
               soundManager.play(1, {volume: volume, from: 21000, to: 29000});
@@ -35,9 +38,9 @@
                 }, 1);
               }, 5000);
             };
-            logo.src = '/img/macgifer.png';
+            logo.src = '/img/macgifer.png?t=' + t;
           };
-          explosion.src = '/img/explosion.gif';
+          explosion.src = '/img/explosion.gif?t=' + t;
         }
       });
     }
