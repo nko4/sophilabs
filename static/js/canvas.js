@@ -8,11 +8,6 @@
   var fontSpace = 5;
   var fontLine = 1;
 
-  context.rect(0, 0, width, height);
-  //context.fillStyle = 'yellow';
-  context.fillStyle = 'black';
-  context.fill();
-  context.restore();
 
   var getLines = function(context, text, width){
       var words = text.replace(/^\s+|\s+$/g, '').split(' ');
@@ -38,23 +33,52 @@
     });
   };
 
-  //context.font = 'bold ' + fontSize + 'px Impact';
-  context.font = 'bold ' + fontSize + 'px Arial';
-  context.textAlign = 'center';
-  //context.fillStyle = '#ffffff';
-  context.fillStyle = '#ffff00';
+  var draw = function(text) {
+    context.rect(0, 0, width, height);
+    //context.fillStyle = 'yellow';
+    context.fillStyle = 'black';
+    context.fill();
+    context.restore();
+    //context.font = 'bold ' + fontSize + 'px Impact';
+    context.font = 'bold ' + fontSize + 'px Arial';
+    context.textAlign = 'center';
+    //context.fillStyle = '#ffffff';
+    context.fillStyle = '#ffff00';
+ 
+    //var topLines = getLines(context, 'I don\'t always stream video'.toUpperCase(), width);
+    //var bottomLines = getLines(context, 'But when I do, I use macgifer.net'.toUpperCase(), width);
+    var bottomLines = getLines(context, text, width).reverse();
 
-  //var topLines = getLines(context, 'I don\'t always stream video'.toUpperCase(), width);
-  //var bottomLines = getLines(context, 'But when I do, I use macgifer.net'.toUpperCase(), width);
-  var bottomLines = getLines(context, 'MacGifer, are you?', width).reverse();
+    //printLines(context, 'fillText', topLines, width/2, fontSize + 10, fontSize + fontSpace);
+    printLines(context, 'fillText', bottomLines, width/2, height - 10, -1 * (fontSize + fontSpace));
 
-  //printLines(context, 'fillText', topLines, width/2, fontSize + 10, fontSize + fontSpace);
-  printLines(context, 'fillText', bottomLines, width/2, height - 10, -1 * (fontSize + fontSpace));
+    context.strokeStyle = '#000000';
+    context.lineWidth = fontLine;
+   //printLines(context, 'strokeText', topLines, width/2, fontSize + 10, fontSize + fontSpace);
+    printLines(context, 'strokeText', bottomLines, width/2, height - 10, -1 * (fontSize + fontSpace));
+  };
 
-  context.strokeStyle = '#000000';
-  context.lineWidth = fontLine;
-  //printLines(context, 'strokeText', topLines, width/2, fontSize + 10, fontSize + fontSpace);
-  printLines(context, 'strokeText', bottomLines, width/2, height - 10, -1 * (fontSize + fontSpace));
+  var recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  //recognition.interimResults = true;
+
+  recognition.onstart = function() {
+      console.log('start');
+  };
+  recognition.onresult = function(event) {
+    for(var i=event.resultIndex; i<event.results.length; i++){
+        var result = event.results[i];
+        draw(result[0].transcript);
+    }
+  };
+  recognition.onerror = function(event) { }
+  recognition.onend = function() {
+      console.log('end');
+  };
+  recognition.lang = 'es-UY';
+  recognition.start();
+
+
 
   context.restore();
 })();
