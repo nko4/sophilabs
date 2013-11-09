@@ -11,7 +11,7 @@ var port = (isProduction ? 80 : 8000);
 //generic config
 app.configure(function(){
   app.set('views', __dirname + '/templates');
-  app.set('view engine', 'ejs');
+  app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.cookieParser());
   app.use(express.session({ secret: 'topsecret' }));
@@ -21,7 +21,11 @@ app.configure(function(){
 });
 
 app.get('/', function(req, res){
-  res.render('index.ejs', {});
+  res.render('index.jade', {});
+});
+
+app.get('/test', function(req, res){
+  res.render('test.jade', {});
 });
 
 app.listen(port);

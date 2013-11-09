@@ -14,7 +14,8 @@
     "nko": "*",
     "express": "3.4.4",
     "ejs": "0.8.4",
-    "socket.io": "0.9.16"
+    "socket.io": "0.9.16",
+    "jade": "~0.35.0"
   },
   "engines": {
     "node": "0.10.x"
