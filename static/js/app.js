@@ -1,6 +1,6 @@
 $(function() {
 
-  var frameRate = 5;
+  var frameRate = 1;
   var width = 320;
   var height = 240;
   var socket = io.connect('ws://localhost');

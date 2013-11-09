@@ -5,35 +5,13 @@
 function ByteArray() {
   this.page = -1;
   this.pages = [];
-  this.newPage();
   this.onWriteCallback = function(val) {};
 }
 
 ByteArray.pageSize = 4096;
-ByteArray.charMap = {};
-
-for (var i = 0; i < 256; i++)
-  ByteArray.charMap[i] = String.fromCharCode(i);
-
-ByteArray.prototype.newPage = function() {
-  this.pages[++this.page] = new Uint8Array(ByteArray.pageSize);
-  this.cursor = 0;
-};
-
-ByteArray.prototype.getData = function() {
-  var rv = '';
-  for (var p = 0; p < this.pages.length; p++) {
-    for (var i = 0; i < ByteArray.pageSize; i++) {
-      rv += ByteArray.charMap[this.pages[p][i]];
-    }
-  }
-  return rv;
-};
 
 ByteArray.prototype.writeByte = function(val) {
   this.onWriteCallback(val);
-  if (this.cursor >= ByteArray.pageSize) this.newPage();
-  //this.pages[this.page][this.cursor++] = val;
 };
 
 ByteArray.prototype.writeUTFBytes = function(string) {

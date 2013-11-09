@@ -13,7 +13,7 @@ onmessage = function(e) {
 
   if (!started) {
     encoder = new GIFEncoder(data.width, data.height);
-    encoder.setFrameRate(5);
+    encoder.setFrameRate(1);
     started = true;
   }
   encoder.stream().onWrite(function(val) {

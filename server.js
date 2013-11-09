@@ -71,7 +71,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.stream().onWrite(function(data) {
     res.write(String.fromCharCode(data), 'binary');
   });
-  encoder.setFrameRate(5);
+  encoder.setFrameRate(20);
   encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
