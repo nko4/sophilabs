@@ -17,8 +17,12 @@
           explosion.onload = function(){
             var logo = new Image();
             logo.onload = function(){
+              var background = document.createElement('div');
+              background.className = 'background';
+              background.appendChild(document.createElement('div'));
+              document.body.insertBefore(background, document.body.firstChild);
               var volume = 100;
-              soundManager.play(1, {volume: volume, position: 21000});
+              soundManager.play(1, {volume: volume, from: 21000, to: 29000});
               setTimeout(function(){
                 setTimeout(function stop(){
                     volume -= 1;
