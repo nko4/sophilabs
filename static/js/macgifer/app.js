@@ -26,6 +26,9 @@ macgifer.App = function () {
   document.getElementById('rec-button').addEventListener('click',
     this.startRecording_.bind(this));
 
+  var gifLink = document.getElementById('gif-link');
+  gifLink.addEventListener('click', gifLink.select.bind(gifLink));
+
   this.worker_ = new Worker('/js/macgifer/worker.js');
   this.worker_.addEventListener('message', this.onWorkerMessage_.bind(this));
 
