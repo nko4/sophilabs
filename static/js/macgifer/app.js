@@ -2,6 +2,9 @@ macgifer = macgifer || {};
 macgifer.extensions = macgifer.extensions || {};
 macgifer.extensions.active = macgifer.extensions.active || [];
 
+/**
+ * App
+ */
 macgifer.App = function () {
   this.events_ = {};
   this.events_[macgifer.App.EVT_FRAME] = [];
@@ -30,8 +33,12 @@ macgifer.App = function () {
   this.initializeCamera_();
 };
 
+// Event on frame added
 macgifer.App.EVT_FRAME = 'frame';
 
+/**
+ * Add extension.
+ */
 macgifer.App.prototype.addExtension_ = function() {
   var src = prompt('Put your javascript file:');
   if (src) {
@@ -41,10 +48,16 @@ macgifer.App.prototype.addExtension_ = function() {
   }
 };
 
+/**
+ * Load extension.
+ */
 macgifer.App.prototype.loadExtension_ = function(extension) {
   this.extensions_.push(new extension(this));
 };
 
+/**
+ * Remove extension.
+ */
 macgifer.App.prototype.removeExtension_ = function(id) {
   var that = this;
   for(var name in this.events_) {
@@ -61,10 +74,16 @@ macgifer.App.prototype.removeExtension_ = function(id) {
   });
 };
 
+/**
+ * Bind an event handler.
+ */
 macgifer.App.prototype.on = function(id, name, callback) {
   this.events_[name].push({id: id, callback: callback});
 };
 
+/**
+ * Get panel of extensions.
+ */
 macgifer.App.prototype.getExtensionPanel = function(id) {
   var panel = document.getElementById('extension-' + id);
   if (panel) {
@@ -78,6 +97,9 @@ macgifer.App.prototype.getExtensionPanel = function(id) {
   return panel;
 };
 
+/**
+ * Handle message from worker.
+ */
 macgifer.App.prototype.onWorkerMessage_ = function(e) {
   var frame = e.data;
   date = new Date().getTime();
@@ -85,6 +107,9 @@ macgifer.App.prototype.onWorkerMessage_ = function(e) {
   this.connection_.send(common.events.EVT_FRAME, frame);
 };
 
+/**
+ * Get host name and port.
+ */
 macgifer.App.prototype.getHost_ = function() {
   var host = window.location.hostname;
   if (window.location.port) {
@@ -93,16 +118,20 @@ macgifer.App.prototype.getHost_ = function() {
   return host;
 };
 
+/**
+ * Create canvas.
+ */
 macgifer.App.prototype.createCanvas_ = function() {
   var canvas = document.createElement('canvas');
   canvas.width = common.WIDTH;
   canvas.height = common.HEIGHT;
   var context = canvas.getContext('2d');
-  //context.translate(canvas.width, 0);
-  //context.scale(-1, 1);
   return canvas;
 };
 
+/**
+ * Initialize video source.
+ */
 macgifer.App.prototype.initializeCamera_ = function() {
   var that = this;
 
@@ -116,18 +145,27 @@ macgifer.App.prototype.initializeCamera_ = function() {
   });
 };
 
+/**
+ * Start capture.
+ */
 macgifer.App.prototype.start = function() {
   this.started_ = true;
   if (!this.interval_)
     this.interval_ = setInterval(this.onFrame_.bind(this), 1000 / common.FRAMERATE);
 };
 
+/**
+ * Stop capture.
+ */
 macgifer.App.prototype.stop = function() {
   this.started_ = false;
   clearInterval(this.interval_);
   this.interval_ = null;
 };
 
+/**
+ * Handle frame.
+ */
 macgifer.App.prototype.onFrame_ = function() {
   if (this.started_) {
     var canvas = this.canvas_;
@@ -147,14 +185,32 @@ macgifer.App.prototype.onFrame_ = function() {
   }
 };
 
+/**
+ * Get ID.
+ */
 macgifer.App.prototype.getGifId = function() {
   return this.gifId_;
 };
 
+/**
+ * Set ID.
+ */
 macgifer.App.prototype.setGifId = function(id) {
+  var url = window.location.origin + '/' + id + '.gif';
+
+  // Watch link
   var link = document.getElementById('gif-link');
-  link.href = window.location.origin + '/' + id + '.gif';
-  link.innerHTML = 'Click!';
+  link.value = url;
+
+  // Twitter sharer
+  var sharer = document.getElementById('twitter-link');
+  sharerUrl = 'http://twitter.com/home?status=' +
+              'Watch+me+live+on+this+GIF+' + encodeURIComponent(url);
+  sharer.value = 'Share';
+  sharer.onclick = function() {
+    window.open(sharerUrl, 'name','height=300,width=400');
+  };
+
   this.gifId_ = id;
 };
 
