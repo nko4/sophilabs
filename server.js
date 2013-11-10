@@ -104,6 +104,9 @@ app.get('/:id.gif', function(req, res) {
   var encoder = new GIFEncoder(common.WIDTH, common.HEIGHT);
 
   res.setHeader('Content-Type', 'image/gif');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
   
   /*
    * Write GIF header.
