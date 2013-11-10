@@ -105,14 +105,6 @@ GIFEncoder.prototype.addFrame = function(imageData) {
   this.getImagePixels(); // convert to correct format if necessary
   this.analyzePixels(); // build color table & map pixels
 
-  // if (firstFrame) {
-  //   this.writeLSD(); // logical screen descriptior
-  //   if (this.repeat >= 0) {
-  //     // use NS app extension to indicate reps
-  //     this.writeNetscapeExt();
-  //   }
-  // }
-
   this.writeGraphicCtrlExt(); // write graphic control extension
   this.writeImageDesc(); // image descriptor
   this.writePalette(); // local color table
@@ -313,7 +305,6 @@ GIFEncoder.prototype.writeGlobalPalette = function() {
 
 /*
   Writes Netscape application extension to define repeat count.
-*/
 GIFEncoder.prototype.writeNetscapeExt = function() {
   this.out.writeByte(0x21); // extension introducer
   this.out.writeByte(0xff); // app extension label
@@ -324,6 +315,7 @@ GIFEncoder.prototype.writeNetscapeExt = function() {
   this.writeShort(this.repeat); // loop count (extra iterations, 0=repeat forever)
   this.out.writeByte(0); // block terminator
 };
+*/
 
 /*
   Writes color table
