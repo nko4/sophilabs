@@ -1,11 +1,13 @@
 /*
-  GIFEncoder.js
-
-  Authors
-  Kevin Weiner (original Java version - kweiner@fmsware.com)
-  Thibault Imbert (AS3 version - bytearray.org)
-  Johan Nordberg (JS version - code@johan-nordberg.com)
-*/
+ * GIFEncoder.js
+ *
+ * Authors
+ * Kevin Weiner (original Java version - kweiner@fmsware.com)
+ * Thibault Imbert (AS3 version - bytearray.org)
+ * Johan Nordberg (JS version - code@johan-nordberg.com)
+ *
+ * Modified version for MacGifer
+ */
 
 if (typeof module !== 'undefined') {
     var NeuQuant = require('./TypedNeuQuant.js');
@@ -13,6 +15,9 @@ if (typeof module !== 'undefined') {
     var ByteArray = require('./ByteArray.js');
 }
 
+/**
+ * GIF encoder.
+ */
 function GIFEncoder(width, height) {
   // image size
   this.width = ~~width;
@@ -23,9 +28,6 @@ function GIFEncoder(width, height) {
 
   // transparent index in color table
   this.transIndex = 0;
-
-  // -1 = no repeat, 0 = forever. anything else is repeat count
-  this.repeat = -1;
 
   // frame delay (hundredths)
   this.delay = 0;
@@ -43,62 +45,46 @@ function GIFEncoder(width, height) {
   this.out = new ByteArray();
 }
 
-/*
-  Sets the delay time between each frame, or changes it for subsequent frames
-  (applies to last frame added)
-*/
+
+/**
+ * Set the delay time between each frame, or change it for subsequent frames
+ * (applies to last frame added).
+ */
 GIFEncoder.prototype.setDelay = function(milliseconds) {
   this.delay = Math.round(milliseconds / 10);
 };
 
-/*
-  Sets frame rate in frames per second.
-*/
+/**
+ * Set frame rate in frames per second.
+ */
 GIFEncoder.prototype.setFrameRate = function(fps) {
   this.delay = Math.round(100 / fps);
 };
 
 /*
-  Sets the GIF frame disposal code for the last added frame and any
-  subsequent frames.
-
-  Default is 0 if no transparent color has been set, otherwise 2.
-*/
+ * Set the GIF frame disposal code for the last added frame and any subsequent 
+ * frames. Default is 0 if no transparent color has been set, otherwise 2.
+ */
 GIFEncoder.prototype.setDispose = function(disposalCode) {
   if (disposalCode >= 0) this.dispose = disposalCode;
 };
 
 /*
-  Sets the number of times the set of GIF frames should be played.
-
-  -1 = play once
-  0 = repeat indefinitely
-
-  Default is -1
-
-  Must be invoked before the first image is added
-*/
-
-GIFEncoder.prototype.setRepeat = function(repeat) {
-  this.repeat = repeat;
-};
-
-/*
-  Sets the transparent color for the last added frame and any subsequent
-  frames. Since all colors are subject to modification in the quantization
-  process, the color in the final palette for each frame closest to the given
-  color becomes the transparent color for that frame. May be set to null to
-  indicate no transparent color.
-*/
+ * Set the transparent color for the last added frame and any subsequent
+ * frames. Since all colors are subject to modification in the quantization
+ * process, the color in the final palette for each frame closest to the given
+ * color becomes the transparent color for that frame. May be set to null to
+ * indicate no transparent color.
+ */
 GIFEncoder.prototype.setTransparent = function(color) {
   this.transparent = color;
 };
 
 /*
-  Adds next GIF frame. The frame is not written immediately, but is
-  actually deferred until the next frame is received so that timing
-  data can be inserted.  Invoking finish() flushes all frames.
-*/
+ * Add next GIF frame. The frame is not written immediately, but is
+ * actually deferred until the next frame is received so that timing
+ * data can be inserted.  Invoking finish() flushes all frames.
+ */
 GIFEncoder.prototype.addFrame = function(imageData) {
   this.image = imageData;
 
@@ -107,40 +93,40 @@ GIFEncoder.prototype.addFrame = function(imageData) {
 
   this.writeGraphicCtrlExt(); // write graphic control extension
   this.writeImageDesc(); // image descriptor
-  this.writePalette(); // local color table
+  this.writeLocalPalette(); // local color table
   this.writePixels(); // encode and write pixel data
 };
 
 /*
-  Adds final trailer to the GIF stream, if you don't call the finish method
-  the GIF stream will not be valid.
-*/
+ * Add final trailer to the GIF stream, if you don't call the finish method
+ * the GIF stream will not be valid.
+ */
 GIFEncoder.prototype.finish = function() {
   this.out.writeByte(0x3b); // gif trailer
 };
 
 /*
-  Sets quality of color quantization (conversion of images to the maximum 256
-  colors allowed by the GIF specification). Lower values (minimum = 1)
-  produce better colors, but slow processing significantly. 10 is the
-  default, and produces good color mapping at reasonable speeds. Values
-  greater than 20 do not yield significant improvements in speed.
-*/
+ * Set quality of color quantization (conversion of images to the maximum 256
+ * colors allowed by the GIF specification). Lower values (minimum = 1)
+ * produce better colors, but slow processing significantly. 10 is the
+ * default, and produces good color mapping at reasonable speeds. Values
+ * greater than 20 do not yield significant improvements in speed.
+ */
 GIFEncoder.prototype.setQuality = function(quality) {
   if (quality < 1) quality = 20;
   this.sample = quality;
 };
 
 /*
-  Writes GIF file header
-*/
+ * Write GIF file header
+ */
 GIFEncoder.prototype.writeHeader = function() {
   this.out.writeUTFBytes("GIF89a");
 };
 
 /*
-  Analyzes current frame colors and creates color map.
-*/
+ * Analyze the current frame colors and create a color map.
+ */
 GIFEncoder.prototype.analyzePixels = function() {
   var len = this.pixels.length;
   var nPix = len / 3;
@@ -172,8 +158,8 @@ GIFEncoder.prototype.analyzePixels = function() {
 };
 
 /*
-  Returns index of palette color closest to c
-*/
+ * Return index of palette color closest to c.
+ */
 GIFEncoder.prototype.findClosest = function(c) {
   if (this.colorTab === null) return -1;
 
@@ -201,9 +187,9 @@ GIFEncoder.prototype.findClosest = function(c) {
 };
 
 /*
-  Extracts image pixels into byte array pixels
-  (removes alphachannel from canvas imagedata)
-*/
+ * Extract image pixels into byte array pixels (remove alphachannel from
+ * canvas imagedata).
+ */
 GIFEncoder.prototype.getImagePixels = function() {
   var w = this.width;
   var h = this.height;
@@ -223,8 +209,8 @@ GIFEncoder.prototype.getImagePixels = function() {
 };
 
 /*
-  Writes Graphic Control Extension
-*/
+ * Write Graphic Control Extension.
+ */
 GIFEncoder.prototype.writeGraphicCtrlExt = function() {
   this.out.writeByte(0x21); // extension introducer
   this.out.writeByte(0xf9); // GCE label
@@ -258,8 +244,8 @@ GIFEncoder.prototype.writeGraphicCtrlExt = function() {
 };
 
 /*
-  Writes Image Descriptor
-*/
+ * Write Image Descriptor.
+ */
 GIFEncoder.prototype.writeImageDesc = function() {
   this.out.writeByte(0x2c); // image separator
   this.writeShort(0); // image position x,y = 0,0
@@ -278,8 +264,8 @@ GIFEncoder.prototype.writeImageDesc = function() {
 };
 
 /*
-  Writes Logical Screen Descriptor
-*/
+ * Write Logical Screen Descriptor.
+ */
 GIFEncoder.prototype.writeLSD = function() {
   // logical screen size
   this.writeShort(this.width);
@@ -297,6 +283,9 @@ GIFEncoder.prototype.writeLSD = function() {
   this.out.writeByte(0); // pixel aspect ratio - assume 1:1
 };
 
+/**
+ * Write global color table.
+ */
 GIFEncoder.prototype.writeGlobalPalette = function() {
   for (var i = 0; i < 6; i++) {
     this.out.writeByte(0x00);
@@ -304,45 +293,35 @@ GIFEncoder.prototype.writeGlobalPalette = function() {
 };
 
 /*
-  Writes Netscape application extension to define repeat count.
-GIFEncoder.prototype.writeNetscapeExt = function() {
-  this.out.writeByte(0x21); // extension introducer
-  this.out.writeByte(0xff); // app extension label
-  this.out.writeByte(11); // block size
-  this.out.writeUTFBytes('NETSCAPE2.0'); // app id + auth code
-  this.out.writeByte(3); // sub-block size
-  this.out.writeByte(1); // loop sub-block id
-  this.writeShort(this.repeat); // loop count (extra iterations, 0=repeat forever)
-  this.out.writeByte(0); // block terminator
-};
-*/
-
-/*
-  Writes color table
-*/
-GIFEncoder.prototype.writePalette = function() {
+ * Write local color table.
+ */
+GIFEncoder.prototype.writeLocalPalette = function() {
   this.out.writeBytes(this.colorTab);
   var n = (3 * 256) - this.colorTab.length;
   for (var i = 0; i < n; i++)
     this.out.writeByte(0);
 };
 
+/*
+ * Write short.
+ */
 GIFEncoder.prototype.writeShort = function(pValue) {
   this.out.writeByte(pValue & 0xFF);
   this.out.writeByte((pValue >> 8) & 0xFF);
 };
 
 /*
-  Encodes and writes pixel data
-*/
+ * Encode and write pixel data.
+ */
 GIFEncoder.prototype.writePixels = function() {
-  var enc = new LZWEncoder(this.width, this.height, this.indexedPixels, this.colorDepth);
+  var enc = new LZWEncoder(this.width, this.height,
+                           this.indexedPixels, this.colorDepth);
   enc.encode(this.out);
 };
 
 /*
-  Retrieves the GIF stream
-*/
+ * Retrieve the GIF stream.
+ */
 GIFEncoder.prototype.stream = function() {
   return this.out;
 };
