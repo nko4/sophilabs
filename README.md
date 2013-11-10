@@ -70,5 +70,6 @@ ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
 * [Sebastian Nogara](http://github.com/snogaraleal)
 
 ## Credits and Thanks
+* The authors of GIFEncoder.js, LZWEncoder.js and NeuQuant.js
 * This project was created for the [Node.js Knockout](nodeknockout.com/)
 * Thanks to [Sophilabs](http://sophilabs.com) team for the place and food!
