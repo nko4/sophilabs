@@ -7,13 +7,13 @@ macgifer.extensions.Meme = function(app) {
   this.fontSize_ = 15;
   this.fontSpace_ = 5;
   this.fontLine_ = 1;
-  this.enabled_ = false;
+  this.enabled_ = true;
   
-  var panel = app.getExtensionPanel(this.getId());
-  //add controls
+  var panel = app.createExtensionPanel(this);
+  
   this.panel_ = panel;
 
-  app.on(this.getId(), macgifer.App.EVT_FRAME, this.draw_.bind(this));
+  app.on(this.getId(), macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
 };
 
 macgifer.extensions.Meme.ID = 'meme';
@@ -30,7 +30,7 @@ macgifer.extensions.Meme.prototype.setEnable = function(enabled) {
     this.enabled_ = enabled;
 };
 
-macgifer.extensions.Meme.prototype.draw_ = function(event) {
+macgifer.extensions.Meme.prototype.onFrame_ = function(event) {
   if (!this.enabled_) {
       return;
   }
@@ -49,16 +49,22 @@ macgifer.extensions.Meme.prototype.draw_ = function(event) {
   context.textAlign = 'center';
   context.fillStyle = '#ffffff';
 
-  var topLines = getLines(context, textTop.toUpperCase(), width);
-  var bottomLines = getLines(context, textBottom.toUpperCase(), width);
+  var topLines = macgifer.extensions.getLines(
+    context, topText.toUpperCase(), width);
+  var bottomLines = macgifer.extensions.getLines(context,
+    bottomText.toUpperCase(), width).reverse();
 
-  printLines(context, 'fillText', topLines, center, this.fontSize_ + 10, this.fontSize_ + this.fontSpace_);
-  printLines(context, 'fillText', bottomLines, center, height - 10, -1 * (this.fontSize_ + this.fontSpace_));
+  macgifer.extensions.printLines(context, 'fillText', topLines, center,
+    this.fontSize_ + 10, this.fontSize_ + this.fontSpace_);
+  macgifer.extensions.printLines(context, 'fillText', bottomLines, center,
+    height - 10, -1 * (this.fontSize_ + this.fontSpace_));
 
   context.strokeStyle = '#000000';
   context.lineWidth = this.fontLine_;
-  printLines(context, 'strokeText', topLines, center, this.fontSize_ + 10, this.fontSize_ + this.fontSpace_);
-  printLines(context, 'strokeText', bottomLines, center, height - 10, -1 * (this.fontSize_ + this.fontSpace_));
+  macgifer.extensions.printLines(context, 'strokeText', topLines, center,
+    this.fontSize_ + 10, this.fontSize_ + this.fontSpace_);
+  macgifer.extensions.printLines(context, 'strokeText', bottomLines,
+    center, height - 10, -1 * (this.fontSize_ + this.fontSpace_));
 
   context.restore();
 };

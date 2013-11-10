@@ -6,7 +6,7 @@ macgifer.App = function () {
   this.events_ = {};
   this.events_[macgifer.App.EVT_FRAME] = [];
 
-  this.extensions_ = [];
+  this.extensions_ = {};
   this.gifId_ = null;
   this.started_ = false;
   this.interval_ = null;
@@ -42,7 +42,11 @@ macgifer.App.prototype.addExtension_ = function() {
 };
 
 macgifer.App.prototype.loadExtension_ = function(extension) {
-  this.extensions_.push(new extension(this));
+  var instance = new extension(this);
+  if (this.extensions_[instance.id]) {
+      return;
+  }
+  this.extensions_[instance.id] = {extension: instance, enable: false};
 };
 
 macgifer.App.prototype.removeExtension_ = function(id) {
@@ -56,25 +60,44 @@ macgifer.App.prototype.removeExtension_ = function(id) {
   if (panel) {
       panel.remove();
   }
-  this.extensions_ = this.extensions_.filter(function(extension) {
-    return extension.getId() != id;
-  });
+  delete this.extensions_[id];
 };
 
 macgifer.App.prototype.on = function(id, name, callback) {
   this.events_[name].push({id: id, callback: callback});
 };
 
-macgifer.App.prototype.getExtensionPanel = function(id) {
-  var panel = document.getElementById('extension-' + id);
+macgifer.App.prototype.createExtensionPanel = function(extension) {
+  var id = extension.getId();
+  var boxId = 'extension-' + id;
+  var panelId = 'extension-' + id + '-panel';
+
+  var panel = document.getElementById(panelId);
   if (panel) {
       return panel;
   }
-  var panel = document.createElement('div');
-  panel['id'] = 'extension' + id;
-  panel['data-id'] = id;
+
+  var box = document.createElement('div');
+  box['id'] = boxId;
+  box['data-id'] = id;
+  box.className = 'extension';
+  
+  var header = document.createElement('div');
+  header.className = 'header';
+  var toolbar = document.createElement('div');
+  toolbar.className = 'toolbar';
+  var title = document.createElement('h4');
+  title.innerHTML = extension.getTitle();
+  header.appendChild(title);
   //TODO: getTitle, add enable, add remove (bind events)
-  document.getElementById('extensions').appendChild(panel);
+  box.appendChild(header);
+
+  var panel = document.createElement('div.panel');
+  panel['id'] = panelId;
+  box.appendChild(panel);
+    
+  document.getElementById('extensions').appendChild(box);
+
   return panel;
 };
 
@@ -138,7 +161,7 @@ macgifer.App.prototype.onFrame_ = function() {
     context.translate(canvas.width, 0);
     context.scale(-1, 1);
     this.events_[macgifer.App.EVT_FRAME].forEach(function(definition){
-      definition.callback({canvas: this.canvas_});
+      definition.callback({canvas: canvas});
     });
     var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     this.worker_.postMessage({

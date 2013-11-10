@@ -4,11 +4,22 @@ macgifer.extensions.active = macgifer.extensions.active || [];
 
 macgifer.extensions.Clock = function(app) {
   this.app_ = app;
-  app.on(macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
+  app.on(this.getId(), macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
+  this.panel_ = app.createExtensionPanel(this);
 };
 
-macgifer.extensions.Clock.prototype.onFrame_ = function(e) {
-  var canvas = e.canvas;
+macgifer.extensions.Clock.ID = 'clock';
+
+macgifer.extensions.Clock.prototype.getId = function(enabled) {
+    return macgifer.extensions.Clock.ID;
+};
+
+macgifer.extensions.Clock.prototype.getTitle = function() {
+    return 'Clock';
+};
+
+macgifer.extensions.Clock.prototype.onFrame_ = function(event) {
+  var canvas = event.canvas;
   var context = canvas.getContext('2d');
   var now = new Date();
 
@@ -18,12 +29,14 @@ macgifer.extensions.Clock.prototype.onFrame_ = function(e) {
   context.font = 'bold 12px Arial';
   context.textAlign = 'left';
   context.fillStyle = '#ffff00';
-  context.fillText(now.toLocaleTimeString(), common.WIDTH / 2 + 30, 15);
+  context.fillText(now.toLocaleTimeString(), canvas.width / 2 + 30, 15);
   
 
   context.strokeStyle = '#000000';
   context.lineWidth = 1;
-  context.strokeText(now.toLocaleTimeString(), common.WIDTH / 2 + 30, 15);
+  context.strokeText(now.toLocaleTimeString(), canvas.width / 2 + 30, 15);
+
+  context.restore();
 };
 
 macgifer.extensions.active.push(macgifer.extensions.Clock);
