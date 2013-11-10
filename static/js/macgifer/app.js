@@ -20,8 +20,8 @@ macgifer.App = function () {
   macgifer.extensions.active = {'push': loadExtension};
   extensions.forEach(loadExtension);
 
-  document.getElementById('extension-add').addEventListener('click',
-   this.addExtension_.bind(this));
+  document.getElementById('extension-add').addEventListener(
+          'click', this.addExtension_.bind(this));
 
   this.worker_ = new Worker('/js/macgifer/worker.js');
   this.worker_.addEventListener('message', this.onWorkerMessage_.bind(this));
@@ -40,11 +40,11 @@ macgifer.App.EVT_FRAME = 'frame';
  * Add extension.
  */
 macgifer.App.prototype.addExtension_ = function() {
-  var src = prompt('Put your javascript file:');
+  var src = prompt('Path to javascript file:');
   if (src) {
-      var script = document.createElement('script');
-      script.src = src;
-      document.body.appendChild(script);
+    var script = document.createElement('script');
+    script.src = src;
+    document.body.appendChild(script);
   }
 };
 
@@ -54,7 +54,7 @@ macgifer.App.prototype.addExtension_ = function() {
 macgifer.App.prototype.loadExtension_ = function(extension) {
   var instance = new extension(this);
   if (this.extensions_[instance.id]) {
-      return;
+    return;
   }
   this.extensions_[instance.id] = {extension: instance, enable: false};
 };
@@ -71,7 +71,7 @@ macgifer.App.prototype.removeExtension_ = function(id) {
   }
   var panel = document.getElementById('extension-' + id);
   if (panel) {
-      panel.remove();
+    panel.remove();
   }
   delete this.extensions_[id];
 };
@@ -93,7 +93,7 @@ macgifer.App.prototype.createExtensionPanel = function(extension) {
 
   var panel = document.getElementById(panelId);
   if (panel) {
-      return panel;
+    return panel;
   }
 
   var box = document.createElement('div');
@@ -173,8 +173,10 @@ macgifer.App.prototype.initializeCamera_ = function() {
  */
 macgifer.App.prototype.start = function() {
   this.started_ = true;
-  if (!this.interval_)
-    this.interval_ = setInterval(this.onFrame_.bind(this), 1000 / common.FRAMERATE);
+  if (!this.interval_) {
+    this.interval_ = setInterval(this.onFrame_.bind(this),
+                                 1000 / common.FRAMERATE);
+  }
 };
 
 /**
