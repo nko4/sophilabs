@@ -79,7 +79,7 @@ app.get('/about.htm', function(req, res) {
 /**
  * Watch a stream.
  */
-app.get('/watch/:id.gif', function(req, res) {
+app.get('/:id.gif', function(req, res) {
   var client = redis.createClient();
   var encoder = new GIFEncoder(common.WIDTH, common.HEIGHT);
 
