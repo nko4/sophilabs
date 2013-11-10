@@ -39,11 +39,33 @@ input[type=button]:active {
     padding: 4px 5px 2px 6px;
 }
 
+input[type=text] {
+    border: 2px inset;
+    outline: 0;
+    padding: 4px;
+}
+
+div.url {
+    height: 32px;
+}
+
 .camera {
-    height: 300px;
+    height: 310px;
     width: 300px;
     border: 3px ridge #fff;
     float: right;
+}
+
+.camera video {
+    margin-left: 28px;
+}
+
+.camera iframe {
+    margin: 24px;
+    padding: 10px;
+    background-color: gray;
+    border: 2px inset;
+    outline: 0;
 }
 
 .extensions {

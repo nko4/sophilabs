@@ -16,7 +16,8 @@ block content
         div.camera
             video(id='camera', width='240', height='180', autoplay='true')
             div.url
-                a(id='gif-link', href='#', target='_blank') Wait...
+                input(type='text', id='gif-link', value='Wait...')
+                input(type='button', id='twitter-link', value='Wait...')
             img(src='/img/twitter.gif')
             iframe(src='http://nodeknockout.com/iframe/sophilabs',
                    frameborder='0',
