@@ -179,3 +179,10 @@ video {
     text-transform: uppercase;
     font-family: Impact;
 }
+
+.extensions .speech input[type=button] {
+    width: 100%; 
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing: border-box;
+}
