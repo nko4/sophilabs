@@ -1,8 +1,8 @@
-//importScripts('/js/gif/NeuQuant.js')
-importScripts('/js/gif/TypedNeuQuant.js')
-importScripts('/js/gif/LZWEncoder.js')
-importScripts('/js/gif/ByteArray.js')
-importScripts('/js/gif/GIFEncoder.js')
+//importScripts('/vendor/lib/NeuQuant.js')
+importScripts('/vendor/lib/TypedNeuQuant.js')
+importScripts('/vendor/lib/LZWEncoder.js')
+importScripts('/vendor/lib/ByteArray.js')
+importScripts('/vendor/lib/GIFEncoder.js')
 importScripts('/js/common.js')
 
 var started = false;

@@ -1,4 +1,6 @@
-
+/**
+ * Common settings.
+ */
 var common = {
   // Event frames
   events: {
