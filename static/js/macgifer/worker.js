@@ -8,6 +8,9 @@ importScripts('/js/common.js')
 var started = false;
 var encoder = null;
 
+/*
+ * Handle incoming message.
+ */
 onmessage = function(e) {
   var data = e.data;
   var buffer = '';
@@ -21,6 +24,9 @@ onmessage = function(e) {
     buffer += String.fromCharCode(val);
   });
 
+  // Add frame to encoder
   encoder.addFrame(data.imageData);
+
+  // Send encoded frame
   postMessage(buffer);
 };

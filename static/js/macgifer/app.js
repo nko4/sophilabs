@@ -75,7 +75,7 @@ macgifer.App.prototype.removeExtension_ = function(id) {
 };
 
 /**
- * Bind an event handler.
+ * Add event listener.
  */
 macgifer.App.prototype.on = function(id, name, callback) {
   this.events_[name].push({id: id, callback: callback});
