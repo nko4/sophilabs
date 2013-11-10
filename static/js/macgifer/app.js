@@ -108,7 +108,7 @@ macgifer.App.prototype.getGifId = function() {
 macgifer.App.prototype.setGifId = function(id) {
   var link = document.getElementById('gif-link');
   link.href = window.location.origin + '/' + id + '.gif';
-  link.innerText = 'Click!';
+  link.innerHTML = 'Click!';
   this.gifId_ = id;
 };
 
