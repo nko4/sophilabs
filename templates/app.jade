@@ -8,11 +8,11 @@ block css
 
 block content
     div.app
-        div.extensions
+        div.extensions(id='extensions')
             div.center
-                input(id='add_extension',
+                input(id='extension-add',
                       type='button',
-                      value='>> Add your own extension <<')
+                      value=' >> Add external extension << ')
         div.camera
             video(id='camera', width='240', height='180', autoplay='true')
             div.url
@@ -32,6 +32,6 @@ block js
     script(src='/js/macgifer/adapter.js')
     script(src='/js/macgifer/connection.js')
     script(src='/js/macgifer/app.js')
-    //script(src='/js/macgifer/extensions/common.js')
+    script(src='/js/macgifer/extensions/common.js')
     //script(src='/js/macgifer/extensions/meme.js')
 

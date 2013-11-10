@@ -17,6 +17,9 @@ macgifer.App = function () {
   macgifer.extensions.active = {'push': loadExtension};
   extensions.forEach(loadExtension);
 
+  document.getElementById('extension-add').addEventListener('click',
+   this.addExtension_.bind(this));
+
   this.worker_ = new Worker('/js/macgifer/worker.js');
   this.worker_.addEventListener('message', this.onWorkerMessage_.bind(this));
 
@@ -29,12 +32,50 @@ macgifer.App = function () {
 
 macgifer.App.EVT_FRAME = 'frame';
 
+macgifer.App.prototype.addExtension_ = function() {
+  var src = prompt('Put your javascript file:');
+  if (src) {
+      var script = document.createElement('script');
+      script.src = src;
+      document.body.appendChild(script);
+  }
+};
+
 macgifer.App.prototype.loadExtension_ = function(extension) {
   this.extensions_.push(extension(this));
 };
 
-macgifer.App.prototype.on = function(name, callback) {
-  this.events_[name].push(callback);
+macgifer.App.prototype.removeExtension_ = function(id) {
+  var that = this;
+  for(var name in this.events_) {
+    this.events_[name].filter(function(definition){
+      return definition.id != id;
+    });
+  }
+  var panel = document.getElementById('extension-' + id);
+  if (panel) {
+      panel.remove();
+  }
+  this.extensions_ = this.extensions_.filter(function(extension) {
+    return extension.getId() != id;
+  });
+};
+
+macgifer.App.prototype.on = function(id, name, callback) {
+  this.events_[name].push({id: id, callback: callback});
+};
+
+macgifer.App.prototype.getExtensionPanel = function(id) {
+  var panel = document.getElementById('extension-' + id);
+  if (panel) {
+      return panel;
+  }
+  var panel = document.createElement('div');
+  panel['id'] = 'extension' + id;
+  panel['data-id'] = id;
+  //TODO: getTitle, add enable, add remove (bind events)
+  document.getElementById('extensions').appendChild(panel);
+  return panel;
 };
 
 macgifer.App.prototype.onWorkerMessage_ = function(e) {
@@ -91,8 +132,8 @@ macgifer.App.prototype.onFrame_ = function() {
   if (this.started_) {
     var context = this.canvas_.getContext('2d');
     context.drawImage(this.video_, 0, 0, this.video_.width, this.video_.height);
-    this.events_[macgifer.App.EVT_FRAME].forEach(function(callback){
-      callback({canvas: this.canvas_});
+    this.events_[macgifer.App.EVT_FRAME].forEach(function(definition){
+      definition.callback({canvas: this.canvas_});
     });
     var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     this.worker_.postMessage({
