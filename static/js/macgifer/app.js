@@ -16,7 +16,7 @@ macgifer.App = function () {
   macgifer.extensions = {'push': loadExtension};
   extensions.forEach(loadExtension);
 
-  this.worker_ = new Worker('js/worker.js');
+  this.worker_ = new Worker('/js/macgifer/worker.js');
   this.worker_.addEventListener('message', this.onWorkerMessage_.bind(this));
 
   this.connection_ = new macgifer.Connection(this.getHost_());
