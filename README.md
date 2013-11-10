@@ -41,10 +41,10 @@ ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
            |  | Draw on                 |  | (GIFEncoder)           |
            |  | HTML5 canvas            |  |                        |
            |<-`                         |<-`                        |
- 	   |--.                         |-------------------------->|
+           |--.                         |-------------------------->|
            |  | Apply                   |       Write header        |
            |  | extensions              |        to response        |
-   	   |<-`                         |                           |
+           |<-`                         |                           |
            |--.                         |                           |
            |  | Encode frame            |                           |
            |  | (GIFEncoder)            |                           |
