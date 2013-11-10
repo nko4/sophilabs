@@ -10,7 +10,7 @@
     onready: function() {
       var t = (new Date()).getTime();
       var backgroundImage = '/img/explosion.gif?t=' + t;
-      var logoImage = '/img/macgifer.png?t=' + t;
+      var logoImage = '/img/macgifer.gif?t=' + t;
       soundManager.createSound({
         id: 1,
         url: '/sound/intro.mp3',
@@ -35,10 +35,15 @@
               var volume = 100;
               soundManager.play(1, {volume: volume, from: 21000, to: 29000});
               setTimeout(function(){
+                var hs = document.querySelectorAll('.hide');
+                for (var i=0; i<hs.length; i++) {
+                  hs[i].classList.remove('hide');
+                }
                 setTimeout(function stop(){
                     volume -= 1;
                     if (volume <= 0) {
                       soundManager.stopAll();
+                      intro.remove();
                     } else {
                       soundManager.setVolume(1, volume);
                       setTimeout(stop, 20);

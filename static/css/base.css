@@ -1,3 +1,63 @@
 body {
     background-color: #000;
+    color: #fff;
+    font-family: 'Comic Sans', 'Comic Sans MS';
+    padding-bottom: 54px;
+}
+
+.content {
+    width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 260%;
+    margin: 0.1em 0;
+}
+
+h2 {
+    text-align: center;
+    font-size: 200%;
+    margin: 0.1em 0;
+}
+
+h3 {
+    text-align: center;
+    font-size: 160%;
+    margin: 0.1em 0;
+}
+
+footer {
+    text-align: center;
+}
+
+footer ul {
+    display: block;
+    height: 20px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+footer ul li {
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 10px;
+}
+
+footer .fire {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    height: 54px;
+    background: transparent url('../img/fire.gif') 50% 0 repeat-x;
+}
+
+.hide {
+    display: none;
+}
+
+p.center {
+    text-align: center;
 }

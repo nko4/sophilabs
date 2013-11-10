@@ -1,17 +1,26 @@
 extends base
 
+block vars
+    - var mainClass = 'hide';
+
 block css
+    link(rel='stylesheet', href='/css/intro.css')
     link(rel='stylesheet', href='/css/app.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Coda:800')
 
 block content
-    video(width='320', height='240', autoplay='true')
-    div.color test
-    div.url
-      a(href='#', target='_blank') Wait...
+    div.app
+        div.extensions
+        div.camera
+            video(width='320', height='240', autoplay='true')
+            div.url
+                a(href='#', target='_blank') Wait...
 
 block js
+    script(src='/vendor/soundmanager2/js/soundmanager2.js')
+    script(src='/js/intro.js')
+    //script(src='/js/canvas.js')
     script(src='/js/jquery.js')
     script(src='/js/adapter.js')
-    script(src='/js/jquery.js')
     script(src='/js/common.js')
     script(src='/js/app.js')

@@ -1,8 +1,7 @@
 (function(){
-  var canvas = document.getElementsByTagName('canvas')[0];
-  var context = canvas.getContext('2d');
-  var width = 320;
-  var height = 240;
+  //var canvas = document.getElementsByTagName('canvas')[0];
+  //var context = canvas.getContext('2d');
+  //var height = 240;
   //var fontSize = 30;
   var fontSize = 15;
   var fontSpace = 5;
@@ -33,8 +32,8 @@
     });
   };
 
-  var draw = function(text) {
-    context.rect(0, 0, width, height);
+  var draw = function(context, text, width, height) {
+    //context.rect(0, 0, width, height);
     //context.fillStyle = 'yellow';
     context.fillStyle = 'black';
     context.fill();
@@ -58,6 +57,7 @@
     printLines(context, 'strokeText', bottomLines, width/2, height - 10, -1 * (fontSize + fontSpace));
   };
 
+  var last = '';
   var recognition = new webkitSpeechRecognition();
   recognition.continuous = true;
   //recognition.interimResults = true;
@@ -68,17 +68,18 @@
   recognition.onresult = function(event) {
     for(var i=event.resultIndex; i<event.results.length; i++){
         var result = event.results[i];
-        draw(result[0].transcript);
+        last = result[0].transcript;
     }
   };
   recognition.onerror = function(event) { }
   recognition.onend = function() {
       console.log('end');
   };
-  recognition.lang = 'es-UY';
+  //recognition.lang = 'es-UY';
   recognition.start();
 
+  window.draw = function(context, width, height) {
+    draw(context, last, width, height);
+  };
 
-
-  context.restore();
 })();

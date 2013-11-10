@@ -40,18 +40,19 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/static'));
+  app.use(express.favicon(__dirname + '/static/img/favicon.ico'));
 });
 
 app.get('/', function(req, res){
   res.render('app.jade', {});
 });
 
-app.get('/intro', function(req, res){
-  res.render('intro.jade', {});
+app.get('/why', function(req, res){
+  res.render('why.jade', {});
 });
 
-app.get('/canvas', function(req, res){
-  res.render('canvas.jade', {});
+app.get('/really', function(req, res){
+  res.render('really.jade', {});
 });
 
 sockets.on('connection', function(socket) {
