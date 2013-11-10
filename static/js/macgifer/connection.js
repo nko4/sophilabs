@@ -18,7 +18,7 @@ macgifer.Connection.prototype.send = function(eventId, message) {
 };
 
 macgifer.Connection.prototype.onError_ = function(err) {
-  
+  console.log('Error: ' + err);
 };
 
 macgifer.Connection.prototype.onMessage_ = function(message) {

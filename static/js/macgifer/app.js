@@ -40,7 +40,7 @@ macgifer.App.prototype.on = function(name, callback) {
 macgifer.App.prototype.onWorkerMessage_ = function(e) {
   var frame = e.data;
   date = new Date().getTime();
-  console.log("got frame: " + frame.length);
+  console.log('Got frame: ' + frame.length + ' bytes');
   this.connection_.send(common.events.EVT_FRAME, frame);
 };
 
@@ -112,8 +112,8 @@ macgifer.App.prototype.getGifId = function() {
 
 macgifer.App.prototype.setGifId = function(id) {
   var link = document.getElementById('gif-link');
-  link.href = window.location.origin + '/watch/' + id + '.gif';
-  link.innerText = 'Click!';
+  link.href = window.location.origin + '/' + id + '.gif';
+  link.innerHTML = 'Click!';
   this.gifId_ = id;
 };
 
