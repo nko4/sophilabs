@@ -33,10 +33,10 @@ function GIFEncoder(width, height) {
   this.image = null; // current frame
   this.pixels = null; // BGR byte array from frame
   this.indexedPixels = null; // converted frame indexed to palette
-  this.colorDepth = null; // number of bit planes
   this.colorTab = null; // RGB palette
   this.usedEntry = new Array(); // active palette entries
-  this.palSize = 7; // color table size (bits-1)
+  this.colorDepth = 8; // number of bit planes
+  this.palSize = this.colorDepth - 1; // color table size (bits-1)
   this.dispose = -1; // disposal code (-1 = use default)
   this.sample = 10; // default sample interval for quantizer
 
@@ -172,8 +172,6 @@ GIFEncoder.prototype.analyzePixels = function() {
   }
 
   this.pixels = null;
-  this.colorDepth = 8;
-  this.palSize = 7;
 
   // get closest match to transparent color if specified
   if (this.transparent !== null) {

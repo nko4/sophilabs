@@ -86,7 +86,7 @@ io.sockets.on('connection', function(socket) {
 
 app.get('/watch/:id.gif', function(req, res) {
   var client = redis.createClient();
-  var encoder = new GIFEncoder(320, 240);
+  var encoder = new GIFEncoder(240, 180);
 
   res.setHeader('Content-Type', 'image/gif');
   
@@ -100,6 +100,7 @@ app.get('/watch/:id.gif', function(req, res) {
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
   encoder.writeNetscapeExt(); // use NS app extension to indicate reps
+  encoder.addFrame(adjustment);
 
   client.psubscribe('*.' + req.params.id);
 

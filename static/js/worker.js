@@ -1,4 +1,4 @@
-importScripts('/js/gif/NeuQuant.js')
+//importScripts('/js/gif/NeuQuant.js')
 importScripts('/js/gif/TypedNeuQuant.js')
 importScripts('/js/gif/LZWEncoder.js')
 importScripts('/js/gif/ByteArray.js')
