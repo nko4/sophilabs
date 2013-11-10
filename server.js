@@ -3,9 +3,9 @@ require('nko')('DQ-GoMjZi2jjKUth');
 
 var express = require('express');
 var http = require('http');
-var socket = require('socket.io');
 var redis = require('redis');
 var fs = require('fs');
+var ws = require('ws');
 
 var GIFEncoder = require('./gif/GIFEncoder.js');
 
@@ -16,7 +16,7 @@ var client = redis.createClient();
 var isProduction = (process.env.NODE_ENV === 'production');
 var port = (isProduction ? 80 : 8000);
 
-var io = socket.listen(server);
+var sockets = new ws.Server({server: server});
 server.listen(port);
 
 var file = __dirname + '/gif/adjustment.json';
@@ -53,33 +53,29 @@ app.get('/canvas', function(req, res){
   res.render('canvas.jade', {});
 });
 
+var EVT_FRAME = 1;
+var EVT_DISCONNECT = 2;
+var EVT_NEW_ID = 3;
+var EVT_FRAME_RECEIVED = 4;
 
-/*
-var ChannelEvent = function(type, value) {
-    this.type = type;
-    this.value = value;
-};
-
-ChannelEvent.prototype.toString() {
-    return this.type + ':' + this.value;
-};*/
-
-io.sockets.on('connection', function(socket) {
+sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for( var i=0; i < 5; i++ )
         gifId += possible.charAt(Math.floor(Math.random() * possible.length));
 
-  socket.emit('new_id', {
-    id: gifId
+  socket.send(String.fromCharCode(EVT_NEW_ID) + gifId);
+
+  socket.on('message', function(data) {
+      var evt = data[0].charCodeAt(0);
+      var data = data.substr(1);
+      if (evt == EVT_FRAME) {
+        client.publish('frame.' + gifId, data);
+        socket.send(String.fromCharCode(EVT_FRAME_RECEIVED));
+      }
   });
 
-  socket.on('frame', function(data) {
-    client.publish('frame.' + gifId, data);
-    socket.emit('frame_received', '');
-  });
-
-  socket.on('disconnect', function() {
+  socket.on('close', function() {
     client.publish('event.' + gifId, 'disconnect');
   });
 });

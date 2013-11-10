@@ -1,26 +1,49 @@
 $(function() {
 
   var date = null;
-  var frameRate = 1;
+  var frameRate = 0.1;
   var width = 240;
   var height = 180;
-  var socket = io.connect('ws://' + window.location.hostname);
 
-  socket.on('new_id', function(data){
-    $('.url a')
-      .attr('href', window.location.origin + '/watch/' + data.id + '.gif')
-      .text('Click here!');
-  });
-  socket.on('frame_received', function(){
-    var end = new Date().getTime();
-    console.log("time elapsed: " + (end - date)/1000);
-  });
+  var url = 'ws://' + window.location.hostname;
+  if (window.location.port) {
+  }
+  var socket = new WebSocket('ws://' + window.location.hostname + ':8000/socket');
+
+  var EVT_FRAME = 1;
+  var EVT_DISCONNECT = 2;
+  var EVT_NEW_ID = 3;
+  var EVT_FRAME_RECEIVED = 4;
+
+  socket.onopen = function() {
+      console.log('open');
+  };
+
+  socket.onerror = function(err) {
+      console.log(err);
+  };
+
+  socket.onmessage = function(message) {
+    var data = message.data;
+    var evt = data[0].charCodeAt(0);
+    var data = data.substr(1);
+
+    if (evt == EVT_NEW_ID) {
+      $('.url a')
+        .attr('href', window.location.origin + '/watch/' + data + '.gif')
+        .text('Click here!');
+    } else if (evt == EVT_FRAME_RECEIVED) {
+      var end = new Date().getTime();
+      console.log("time elapsed: " + (end - date)/1000);
+    }
+  };
+
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
     date = new Date().getTime();
     console.log("got frame: " + frame.length);
-    socket.emit('frame', frame);
+    socket.send(String.fromCharCode(EVT_FRAME) + frame);
   });
 
   var video = $('video')[0];
