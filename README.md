@@ -29,8 +29,8 @@ ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
 
 ## How does it work?
 ```
-        Browser                      Node.js                 Browser/phone
-     (broadcaster)                    server               mplayer/microwave
+        Browser                      Node.js                  Browser/phone
+     (broadcaster)                    server                mplayer/microwave
            .                            .                       (watcher)
            |                            |                           .
            |--.                         |                           |
