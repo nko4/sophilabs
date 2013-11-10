@@ -119,8 +119,9 @@ app.get('/:id.gif', function(req, res) {
       res.write(data, 'binary');
     } else if (type == common.redis.CH_EVENT) {
       console.log('Received event: ' + data);
-      if (data == common.redis.EVT_DISCONNECt) {
+      if (data == common.redis.EVT_DISCONNECT) {
         encoder.addFrame(adjustment);
+        res.end();
       }
     }
   });
