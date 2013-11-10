@@ -45,6 +45,14 @@ input[type=text] {
     padding: 4px;
 }
 
+iframe {
+    margin: 24px;
+    padding: 10px;
+    background-color: white;
+    border: 2px inset;
+    outline: 0;
+}
+
 div.url {
     height: 32px;
 }
@@ -56,16 +64,23 @@ div.url {
     float: right;
 }
 
-.camera video {
-    margin-left: 28px;
+.camera .rec-button:hover {
+    cursor: pointer;
 }
 
-.camera iframe {
-    margin: 24px;
-    padding: 10px;
-    background-color: gray;
-    border: 2px inset;
-    outline: 0;
+.camera .rec-button {
+    background-image: url('../img/rec.gif');
+    width: 130px;
+    height: 130px;
+    margin: 45px auto;
+}
+
+.camera video, .camera .url {
+    display: none;
+}
+
+.camera video {
+    margin-left: 28px;
 }
 
 .extensions {
