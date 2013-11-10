@@ -1,24 +1,24 @@
 /*
-  LZWEncoder.js
-
-  Authors
-  Kevin Weiner (original Java version - kweiner@fmsware.com)
-  Thibault Imbert (AS3 version - bytearray.org)
-  Johan Nordberg (JS version - code@johan-nordberg.com)
-
-  Acknowledgements
-  GIFCOMPR.C - GIF Image compression routines
-  Lempel-Ziv compression based on 'compress'. GIF modifications by
-  David Rowley (mgardi@watdcsu.waterloo.edu)
-  GIF Image compression - modified 'compress'
-  Based on: compress.c - File compression ala IEEE Computer, June 1984.
-  By Authors: Spencer W. Thomas (decvax!harpo!utah-cs!utah-gr!thomas)
-  Jim McKie (decvax!mcvax!jim)
-  Steve Davies (decvax!vax135!petsd!peora!srd)
-  Ken Turkowski (decvax!decwrl!turtlevax!ken)
-  James A. Woods (decvax!ihnp4!ames!jaw)
-  Joe Orost (decvax!vax135!petsd!joe)
-*/
+ * LZWEncoder.js
+ *
+ * Authors
+ * Kevin Weiner (original Java version - kweiner@fmsware.com)
+ * Thibault Imbert (AS3 version - bytearray.org)
+ * Johan Nordberg (JS version - code@johan-nordberg.com)
+ *
+ * Acknowledgements
+ * GIFCOMPR.C - GIF Image compression routines
+ * Lempel-Ziv compression based on 'compress'. GIF modifications by
+ * David Rowley (mgardi@watdcsu.waterloo.edu)
+ * GIF Image compression - modified 'compress'
+ * Based on: compress.c - File compression ala IEEE Computer, June 1984.
+ * By Authors: Spencer W. Thomas (decvax!harpo!utah-cs!utah-gr!thomas)
+ * Jim McKie (decvax!mcvax!jim)
+ * Steve Davies (decvax!vax135!petsd!peora!srd)
+ * Ken Turkowski (decvax!decwrl!turtlevax!ken)
+ * James A. Woods (decvax!ihnp4!ames!jaw)
+ * Joe Orost (decvax!vax135!petsd!joe)
+ */
 
 var EOF = -1;
 var BITS = 12;

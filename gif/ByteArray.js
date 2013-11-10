@@ -1,6 +1,8 @@
 /*
-  ByteArray.js
-*/
+ * ByteArray.js
+ *
+ * Modified version for MacGifer
+ */
 
 function ByteArray() {
   this.page = -1;
