@@ -2,14 +2,14 @@ macgifer = macgifer || {};
 macgifer.extensions = macgifer.extensions || [];
 
 macgifer.extensions.Meme = function(app) {
-    app.on(macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
-    this._app = app;
+  this._app = app;
+  app.on(macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
 };
 
-macgifer.extensions.Meme.name = 'meme';
+macgifer.extensions.Meme.prototype.onFrame_ = function(event) {
+  var canvas = event.canvas;
 
-macgifer.extensions.Meme.prototype.onFrame_ = function(data) {
-
+  context.restore();
 };
 
 macgifer.extensions.push(macgifer.extensions.Meme);

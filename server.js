@@ -59,6 +59,10 @@ app.get('/really.htm', function(req, res){
   res.render('really.jade', {});
 });
 
+app.get('/about.htm', function(req, res){
+  res.render('about.jade', {});
+});
+
 sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
