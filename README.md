@@ -1,86 +1,69 @@
 # MacGifer
 
-![awesomeness](http://i28.tinypic.com/dhfitg.gif)
+![Vote KO widget](http://f.cl.ly/items/1n3g0W0F0G3V0i0d0321/Screen%20Shot%202012-11-04%20at%2010.01.36%20AM.png)
 
+In a divided world, streaming formats are a matter of inclusion. GIF was introduced by CompuServe in 1987, they didn't know how powerful it was going to be. 26 years later, using NodeJS together with Redis, WebRTC, websockets and HTML5, MacGifer introduces GIF-based streaming, making it possible for Internet Explorer 6.0 to be part of society once again.
 
+## Requirements
+```sh
+# Redis
+sudo add-apt-repository ppa:chris-lea/redis-server
+sudo apt-get update
+sudo apt-get install redis-server
+```
 
-## Quick Start
+## Deploying
 
-~~~sh
-# getting the code
-git clone git@github.com:nko4/sophilabs.git && cd ./sophilabs/
-
-# developing
-npm install
-npm start
-
-# deploying (to http://sophilabs.2013.nodeknockout.com/)
-./deploy nko
-
+```sh
 # ssh access
 ssh deploy@sophilabs.2013.nodeknockout.com
 ssh root@sophilabs.2013.nodeknockout.com
+
 # or, if you get prompted for a password
 ssh -i ./id_deploy deploy@sophilabs.2013.nodeknockout.com
 ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
-~~~
 
-Read more about this setup [on our blog][deploying-nko].
+# using the included script
+./deploy nko
+```
 
-[deploying-nko]: http://blog.nodeknockout.com/post/66039926165/node-knockout-deployment-setup
+## How does it work?
+```
+        Browser                  Node.js server                  Browser
+     (broadcaster)                      .                       (watcher)
+           .                            |                           .
+           |--.                         |                           |
+           |  | Get webcam frame        |<--------------------------|
+           |  | (WebRTC)                |--.     HTTP Request       |
+           |<-`                         |  |                        |
+           |--.                         |  | Encode GIF header      |
+           |  | Draw on                 |  | (GIFEncoder)           |
+           |  | HTML5 canvas            |  |                        |
+           |<-`                         |<-`                        |
+           |--.                         |-------------------------->|
+           |  | Encode frame            |       Write header        |
+           |  | (GIFEncoder)            |        to response        |
+           |<-`                         |                           |
+           |--------------------------->|--.                        |
+           |         Send frame         |  | Publish to             |
+           |        (websockets)        |  | Redis channel          |
+           |                            |<-`                        |
+           |                            |--.                        |
+           |                            |  | Read from              |
+           |                            |  | Redis channel          |
+           |                            |<-`                        |
+           |                            |-------------------------->|
+           |                            |       Write frame         |
+           |                            |       to response         |
+           |                            |                           |
+           `                            `                           `
+```
 
-## Tips
+## Authors
+* [Eduardo Veiga](https://github.com/cinemascop89)
+* [Pablo Ricco](http://github.com/pricco)
+* [Sebastian Nogara](http://github.com/snogaraleal)
 
-### Your Server
-
-We've already set up a basic node server for you. Details:
-
-* Ubuntu 12.04 (Precise) - 64-bit
-* server.js is at: `/home/deploy/current/server.js`
-* logs are at: `/home/deploy/shared/logs/server/current`
-* `runit` keeps the server running.
-  * `sv restart serverjs` - restarts
-  * `sv start serverjs` - starts
-  * `sv stop serverjs` - stops
-  * `ps -ef | grep runsvdir` - to see logs
-  * `cat /etc/service/serverjs/run` - to see the config
-
-You can use the `./deploy` script included in this repo to deploy to your
-server right now. Advanced users, feel free to tweak.
-
-Read more about this setup [on our blog][deploying-nko].
-
-### Vote KO Widget
-
-![Vote KO widget](http://f.cl.ly/items/1n3g0W0F0G3V0i0d0321/Screen%20Shot%202012-11-04%20at%2010.01.36%20AM.png)
-
-Use our "Vote KO" widget to let from your app directly. Here's the code for
-including it in your site:
-
-~~~html
-<iframe src="http://nodeknockout.com/iframe/sophilabs" frameborder=0 scrolling=no allowtransparency=true width=115 height=25>
-</iframe>
-~~~
-
-### Tutorials & Free Services
-
-If you're feeling a bit lost about how to get started or what to use, we've
-got some [great resources for you](http://nodeknockout.com/resources),
-including:
-
-* [How to install node and npm](http://blog.nodeknockout.com/post/65463770933/how-to-install-node-js-and-npm)
-* [Getting started with Express](http://blog.nodeknockout.com/post/65630558855/getting-started-with-express)
-* [OAuth with Passport](http://blog.nodeknockout.com/post/66118192565/getting-started-with-passport)
-* [Going Beyond “Hello World” with Drywall](http://blog.nodeknockout.com/post/65711111886/going-beyond-hello-world-with-drywall)
-* [and many more](http://nodeknockout.com/resources#tutorials)&hellip;
-
-## Have fun!
-
-If you have any issues, we're on IRC in #nodeknockout on freenode, email us at
-<help@nodeknockout.com>, or tweet [@node_knockout](https://twitter.com/node_knockout).
-
-## Bootstraping
-
-    sudo add-apt-repository ppa:chris-lea/redis-server
-    sudo apt-get update
-    sudo apt-get install redis-server
+## Credits and Thanks
+* This project was created for the [Node.js Knockout](nodeknockout.com/)
+* Thanks to [Sophilabs](http://sophilabs.com) team for the place and food!
