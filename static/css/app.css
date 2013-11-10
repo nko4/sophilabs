@@ -75,11 +75,11 @@ div.url {
     margin: 45px auto;
 }
 
-.camera video, .camera .url {
+.camera canvas, .camera .url {
     display: none;
 }
 
-.camera video {
+.camera canvas {
     margin-left: 28px;
 }
 

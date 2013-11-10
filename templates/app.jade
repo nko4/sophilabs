@@ -14,10 +14,10 @@ block content
                       type='button',
                       value=' >> Add external extension << ')
             div.center
-                a(href='https://github.com/nko4/sophilabs/blob/master/static/js/macgifer/extensions/meme.js') Check out this example
+                a(href='https://github.com/nko4/sophilabs/blob/master/static/js/macgifer/extensions/meme.js', target='_blank') Check out this example
         div.camera
             div.rec-button(id='rec-button')
-            video(id='camera', width='240', height='180', autoplay='true')
+            canvas(id='canvas', width='240', height='180')
             div.url
                 input(type='text', id='gif-link', value='Wait...')
                 input(type='button', id='twitter-link', value='Wait...')
