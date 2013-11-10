@@ -30,7 +30,7 @@ macgifer.App = function () {
 macgifer.App.EVT_FRAME = 'frame';
 
 macgifer.App.prototype.loadExtension_ = function(extension) {
-  this.extensions_.push(extension(this));
+  this.extensions_.push(new extension(this));
 };
 
 macgifer.App.prototype.on = function(name, callback) {
@@ -57,8 +57,8 @@ macgifer.App.prototype.createCanvas_ = function() {
   canvas.width = common.WIDTH;
   canvas.height = common.HEIGHT;
   var context = canvas.getContext('2d');
-  context.translate(canvas.width, 0);
-  context.scale(-1, 1);
+  //context.translate(canvas.width, 0);
+  //context.scale(-1, 1);
   return canvas;
 };
 
@@ -89,10 +89,15 @@ macgifer.App.prototype.stop = function() {
 
 macgifer.App.prototype.onFrame_ = function() {
   if (this.started_) {
-    var context = this.canvas_.getContext('2d');
+    var canvas = this.canvas_;
+    var context = canvas.getContext('2d');
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
     context.drawImage(this.video_, 0, 0, this.video_.width, this.video_.height);
+    context.translate(canvas.width, 0);
+    context.scale(-1, 1);
     this.events_[macgifer.App.EVT_FRAME].forEach(function(callback){
-      callback({canvas: this.canvas_});
+      callback({canvas: canvas});
     });
     var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     this.worker_.postMessage({
