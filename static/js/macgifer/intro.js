@@ -77,7 +77,7 @@ macgifer.Intro.prototype.animate_ = function() {
   intro.appendChild(logo);
 
   document.body.insertBefore(intro, document.body.firstChild);
-  soundManager.play(1, {volume: 100, from: 21000, to: 29000});
+  soundManager.play(1, {volume: 100});
   this.intro_ = intro;
   setTimeout(this.stop_.bind(this), 5000);
 };
@@ -91,16 +91,6 @@ macgifer.Intro.prototype.stop_ = function() {
   for (var i=0; i<hs.length; i++) {
     hs[i].classList.remove('hide');
   }
-  var volume = 100;
-  setTimeout(function stop(){
-    volume -= 1;
-    if (volume <= 0) {
-      soundManager.stopAll();
-    } else {
-      soundManager.setVolume(1, volume);
-      setTimeout(stop, 20);
-    }
-   }, 1);
 };
 
 new macgifer.Intro();
