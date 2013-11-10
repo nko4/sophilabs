@@ -40,7 +40,7 @@ macgifer.App.prototype.on = function(name, callback) {
 macgifer.App.prototype.onWorkerMessage_ = function(e) {
   var frame = e.data;
   date = new Date().getTime();
-  console.log("got frame: " + frame.length);
+  console.log('Got frame: ' + frame.length + ' bytes');
   this.connection_.send(common.events.EVT_FRAME, frame);
 };
 
