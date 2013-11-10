@@ -64,6 +64,21 @@ div.url {
     float: right;
 }
 
+.camera .rec-button:hover {
+    cursor: pointer;
+}
+
+.camera .rec-button {
+    background-image: url('../img/rec.gif');
+    width: 130px;
+    height: 130px;
+    margin: 45px auto;
+}
+
+.camera video, .camera .url {
+    display: none;
+}
+
 .camera video {
     margin-left: 28px;
 }
@@ -75,7 +90,16 @@ div.url {
 
 .extensions .extension {
     border: 3px ridge #fff;
-    margin-bottom: 3px;
+    margin: 4px 0;
+    padding: 2px;
+}
+
+.extensions .extension .header h4 {
+    margin: 2px 0;
+}
+
+.extensions .extension .header .toolbar {
+    float: right;
 }
 
 video {

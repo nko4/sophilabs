@@ -23,14 +23,18 @@ macgifer.App = function () {
   document.getElementById('extension-add').addEventListener(
           'click', this.addExtension_.bind(this));
 
+  document.getElementById('rec-button').addEventListener('click',
+    this.startRecording_.bind(this));
+
+  var gifLink = document.getElementById('gif-link');
+  gifLink.addEventListener('click', gifLink.select.bind(gifLink));
+
   this.worker_ = new Worker('/js/macgifer/worker.js');
   this.worker_.addEventListener('message', this.onWorkerMessage_.bind(this));
 
   this.connection_ = new macgifer.Connection(this.getHost_());
   this.connection_.on(common.events.EVT_NEW_ID, this.setGifId.bind(this));
   this.connection_.connect();
-
-  this.initializeCamera_();
 };
 
 // Event on frame added
@@ -49,14 +53,22 @@ macgifer.App.prototype.addExtension_ = function() {
 };
 
 /**
+ * Enable extension.
+ */
+macgifer.App.prototype.enableExtension_ = function(event) {
+    var id = event.target['data-id'];
+    this.extensions_[id].enable = event.target.checked;
+};
+
+/**
  * Load extension.
  */
 macgifer.App.prototype.loadExtension_ = function(extension) {
   var instance = new extension(this);
-  if (this.extensions_[instance.id]) {
-    return;
+  if (this.extensions_[instance.getId()]) {
+      return;
   }
-  this.extensions_[instance.id] = {extension: instance, enable: false};
+  this.extensions_[instance.getId()] = {extension: instance, enable: false};
 };
 
 /**
@@ -90,7 +102,7 @@ macgifer.App.prototype.createExtensionPanel = function(extension) {
   var id = extension.getId();
   var boxId = 'extension-' + id;
   var panelId = 'extension-' + id + '-panel';
-
+  var enableId = 'extension-' + id + '-enable'; 
   var panel = document.getElementById(panelId);
   if (panel) {
     return panel;
@@ -101,21 +113,32 @@ macgifer.App.prototype.createExtensionPanel = function(extension) {
   box['data-id'] = id;
   box.className = 'extension';
   
-  var header = document.createElement('div');
-  header.className = 'header';
   var toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
+  var checkbox = document.createElement('input');
+  checkbox['id'] = enableId;
+  checkbox['type'] = 'checkbox';
+  checkbox['data-id'] = id;
+  checkbox.addEventListener('click', this.enableExtension_.bind(this));
+  toolbar.appendChild(checkbox);
+  var label = document.createElement('label');
+  label.setAttribute('for', enableId);
+  label.innerHTML = 'Enable';
+  toolbar.appendChild(label);
+  var header = document.createElement('div');
+  header.className = 'header';
+  header.appendChild(toolbar);
   var title = document.createElement('h4');
   title.innerHTML = extension.getTitle();
   header.appendChild(title);
-  //TODO: getTitle, add enable, add remove (bind events)
   box.appendChild(header);
 
   var panel = document.createElement('div.panel');
   panel['id'] = panelId;
   box.appendChild(panel);
     
-  document.getElementById('extensions').appendChild(box);
+  document.getElementById('extensions').insertBefore(box,
+    document.getElementById('extensions').firstChild);
 
   return panel;
 };
@@ -126,7 +149,6 @@ macgifer.App.prototype.createExtensionPanel = function(extension) {
 macgifer.App.prototype.onWorkerMessage_ = function(e) {
   var frame = e.data;
   date = new Date().getTime();
-  console.log('Got frame: ' + frame.length + ' bytes');
   this.connection_.send(common.events.EVT_FRAME, frame);
 };
 
@@ -153,9 +175,22 @@ macgifer.App.prototype.createCanvas_ = function() {
 };
 
 /**
+ * Start gif transmission
+ */
+macgifer.App.prototype.startRecording_ = function() {
+  this.initializeCamera(function(){
+    var elements = document.querySelectorAll('.camera video, .camera .url');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].style.display = 'block';
+    }
+    document.getElementById('rec-button').style.display = 'none';
+  });
+};
+
+/**
  * Initialize video source.
  */
-macgifer.App.prototype.initializeCamera_ = function() {
+macgifer.App.prototype.initializeCamera = function(callback) {
   var that = this;
 
   getUserMedia({video: true}, function(stream){
@@ -163,6 +198,7 @@ macgifer.App.prototype.initializeCamera_ = function() {
     if (!this.started_) {
       that.start();
     }
+    callback();
   }, function(err) {
     console.log(err);
   });
@@ -193,6 +229,7 @@ macgifer.App.prototype.stop = function() {
  */
 macgifer.App.prototype.onFrame_ = function() {
   if (this.started_) {
+    var extensions = this.extensions_;
     var canvas = this.canvas_;
     var context = canvas.getContext('2d');
     context.translate(canvas.width, 0);
@@ -201,7 +238,13 @@ macgifer.App.prototype.onFrame_ = function() {
     context.translate(canvas.width, 0);
     context.scale(-1, 1);
     this.events_[macgifer.App.EVT_FRAME].forEach(function(definition){
-      definition.callback({canvas: canvas});
+      if (extensions[definition.id].enable) {
+        try {
+          definition.callback({canvas: canvas});
+        } catch(e) {
+          console.log(e);
+        }  
+      }
     });
     var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     this.worker_.postMessage({
