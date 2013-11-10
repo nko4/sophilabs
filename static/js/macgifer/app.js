@@ -207,7 +207,7 @@ macgifer.App.prototype.initializeCamera = function(callback) {
     that.video_.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
     if (!this.started_) {
       that.start();
-      setInterval(that.updateCanvas_.bind(that), 200);
+      setInterval(that.updateCanvas_.bind(that), 50);
     }
     callback();
   }, function(err) {
