@@ -205,7 +205,7 @@ macgifer.App.prototype.setGifId = function(id) {
   // Twitter sharer
   var sharer = document.getElementById('twitter-link');
   sharerUrl = 'http://twitter.com/home?status=' +
-              'Watch+me+live+on+this+GIF+' + encodeURIComponent(url);
+              'Watch+me+live+on+this+%23MacGifer+GIF+' + encodeURIComponent(url);
   sharer.value = 'Share';
   sharer.onclick = function() {
     window.open(sharerUrl, 'name','height=300,width=400');
