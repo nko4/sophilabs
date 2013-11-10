@@ -77,6 +77,13 @@ app.get('/about.htm', function(req, res) {
 });
 
 /**
+ * FAQ
+ */
+app.get('/faq.htm', function(req, res) {
+  res.render('faq.jade', {});
+});
+
+/**
  * Watch a stream.
  */
 app.get('/:id.gif', function(req, res) {
