@@ -8,7 +8,7 @@ var common = {
   },
 
   FRAMERATE: 1,
-  RECV_FRAMERATE: 20,
+  RECV_FRAMERATE: 5,
 
   WIDTH: 240,
   HEIGHT: 180
