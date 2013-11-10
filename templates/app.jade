@@ -16,7 +16,7 @@ block content
         div.camera
             video(id='camera', width='240', height='180', autoplay='true')
             div.url
-                a(href='#', target='_blank') Wait...
+                a(id='gif-link', href='#', target='_blank') Wait...
             img(src='/img/twitter.gif')
             iframe(src='http://nodeknockout.com/iframe/sophilabs',
                    frameborder='0',
@@ -30,4 +30,5 @@ block js
     script(src='/js/common.js')
     script(src='/js/macgifer/intro.js')
     script(src='/js/macgifer/adapter.js')
+    script(src='/js/macgifer/connection.js')
     script(src='/js/macgifer/app.js')
