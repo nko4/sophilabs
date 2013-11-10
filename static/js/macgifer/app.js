@@ -133,8 +133,9 @@ macgifer.App.prototype.createExtensionPanel = function(extension) {
   header.appendChild(title);
   box.appendChild(header);
 
-  var panel = document.createElement('div.panel');
+  var panel = document.createElement('div');
   panel['id'] = panelId;
+  panel.className = id;
   box.appendChild(panel);
     
   document.getElementById('extensions').insertBefore(box,
