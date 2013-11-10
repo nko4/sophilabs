@@ -27,6 +27,19 @@ var port = (isProduction ? 80 : 8000);
 server.listen(port);
 
 /*
+ * Load images.
+ */
+var loadRAWImage = function(name) {
+  var path = __dirname + '/res/' + name +  '-' +
+             common.WIDTH + 'x' + common.HEIGHT + '.json';
+  var data = fs.readFileSync(path, 'utf8');
+  return JSON.parse(data);
+};
+
+var adjustment = loadRAWImage('adjustment');
+var establishing = loadRAWImage('establishing');
+
+/*
  * Configure express app.
  */
 app.configure(function() {
@@ -102,7 +115,7 @@ app.get('/:id.gif', function(req, res) {
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
-  encoder.addFrame(adjustment);
+  encoder.addFrame(establishing);
 
   /*
    * Read frames from Redis channel.
@@ -119,8 +132,9 @@ app.get('/:id.gif', function(req, res) {
       res.write(data, 'binary');
     } else if (type == common.redis.CH_EVENT) {
       console.log('Received event: ' + data);
-      if (data == common.redis.EVT_DISCONNECt) {
+      if (data == common.redis.EVT_DISCONNECT) {
         encoder.addFrame(adjustment);
+        res.end();
       }
     }
   });
@@ -132,20 +146,6 @@ app.get('/:id.gif', function(req, res) {
     client.unsubscribe();
     client.end();
   });
-});
-
-/*
- * Load adjustment image.
- */
-var file = __dirname + '/res/adjustment-' + 
-           common.WIDTH + 'x' + common.HEIGHT + '.json';
-var adjustment = null;
-fs.readFile(file, 'utf8', function(err, data) {
-  if (err) {
-    console.log('Error: ' + err);
-    return;
-  }
-  adjustment = JSON.parse(data);
 });
 
 /**

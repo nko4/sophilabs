@@ -46,15 +46,27 @@ input[type=text] {
 }
 
 iframe {
-    margin: 24px;
+    margin: 16px;
     padding: 10px;
     background-color: white;
     border: 2px inset;
     outline: 0;
 }
 
+input#gif-link {
+    width: 220px;
+}
+
+input#twitter-link {
+    width: 62px;
+}
+
 div.url {
     height: 32px;
+}
+
+div.url * {
+    margin: 1px;
 }
 
 .camera {
@@ -73,6 +85,10 @@ div.url {
     width: 130px;
     height: 130px;
     margin: 45px auto;
+}
+
+.camera .label {
+    font-size: 12px;
 }
 
 .camera canvas, .camera .url {
