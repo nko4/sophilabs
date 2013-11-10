@@ -1,5 +1,6 @@
 macgifer = macgifer || {};
-macgifer.extensions = macgifer.extensions || [];
+macgifer.extensions = macgifer.extensions || {};
+macgifer.extensions.active = macgifer.extensions.active || [];
 
 macgifer.extensions.Clock = function(app) {
   this.app_ = app;
