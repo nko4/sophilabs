@@ -5,22 +5,23 @@ block vars
 
 html
     head
-        title MacGifer
+        title ~~ MacGifer ~~ Realtime GIF Based Communication &copy;
         link(rel='stylesheet', href='/css/base.css')
         block css
     body
         div.main(class='#{mainClass}')
             header
                 h1 MacGifer
-                h3  Realtime GIF Based Comunnication &copy;
+                marquee(behavior='alternate')
+                    h3 Realtime GIF Based Communication &copy;
             div.content
                 block content
             footer
                 ul
                     li
-                        a(href='/why') Why?
+                        a(href='/why.htm') Why?
                     li
-                        a(href='/really') Really?!!1
+                        a(href='/really.htm') Really?!!1
                 p
                     a(href="mailto:webmaster@macgifer.net")
                         img(src='/img/email.gif')

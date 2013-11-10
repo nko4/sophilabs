@@ -9,6 +9,41 @@
     font-style: normal;
 }
 
+.app {
+    width: 700px;
+    margin: 20px auto;
+}
+    
+.app:before,
+.app:after {
+    content: " ";
+    display: table;
+}
+
+.app:after {
+    clear: both;
+}
+
+.app {
+    *zoom: 1;
+}
+
+.camera {
+    height: 300px;
+    width: 300px;
+    border: 5px ridge #fff;
+    float: right;
+}
+
+.extensions {
+    width: 380px;
+    float: left;
+}
+
+.extensions > div {
+    border: 5px ridge #fff;
+}
+
 video {
     transform: rotateY(180deg);
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */

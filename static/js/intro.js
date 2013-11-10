@@ -35,6 +35,7 @@
               var volume = 100;
               soundManager.play(1, {volume: volume, from: 21000, to: 29000});
               setTimeout(function(){
+                intro.remove();
                 var hs = document.querySelectorAll('.hide');
                 for (var i=0; i<hs.length; i++) {
                   hs[i].classList.remove('hide');
@@ -43,7 +44,6 @@
                     volume -= 1;
                     if (volume <= 0) {
                       soundManager.stopAll();
-                      intro.remove();
                     } else {
                       soundManager.setVolume(1, volume);
                       setTimeout(stop, 20);

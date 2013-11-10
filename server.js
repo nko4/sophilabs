@@ -44,14 +44,18 @@ app.configure(function() {
 });
 
 app.get('/', function(req, res){
+  res.redirect('/index.htm');
+});
+
+app.get('/index.htm', function(req, res){
   res.render('app.jade', {});
 });
 
-app.get('/why', function(req, res){
+app.get('/why.htm', function(req, res){
   res.render('why.jade', {});
 });
 
-app.get('/really', function(req, res){
+app.get('/really.htm', function(req, res){
   res.render('really.jade', {});
 });
 
