@@ -32,6 +32,9 @@ $(function() {
 
     renderTimer = setInterval(function() {
       context.drawImage(video, 0, 0, video.width, video.height);
+      if (window.draw) {
+          window.draw(context, video.width, video.height);
+      }
       onFrame(context);
     }, Math.round(1000 / frameRate));
   }, function(err){

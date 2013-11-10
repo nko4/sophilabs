@@ -1,9 +1,30 @@
 doctype 5
+
+- var mainClass = '';
+block vars
+
 html
     head
         title MacGifer
         link(rel='stylesheet', href='/css/base.css')
         block css
     body
-        block content
+        div.main(class='#{mainClass}')
+            header
+                h1 MacGifer
+                h3  Realtime GIF Based Comunnication &copy;
+            div.content
+                block content
+            footer
+                ul
+                    li
+                        a(href='/why') Why?
+                    li
+                        a(href='/really') Really?!!1
+                p
+                    a(href="mailto:webmaster@macgifer.net")
+                        img(src='/img/email.gif')
+                div.fire
+        script(src='http://comicsansdag.nl/t.js')
         block js
+        script(src='/js/analytics.js')

@@ -7,7 +7,6 @@
          url('../font/impact.svg#impactregular') format('svg');
     font-weight: normal;
     font-style: normal;
-
 }
 
 video {
@@ -15,8 +14,3 @@ video {
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */
     -moz-transform:rotateY(180deg); /* Firefox */
 }
-
-/** temp **/
-canvas {
-}
-
