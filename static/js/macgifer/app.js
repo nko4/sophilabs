@@ -1,5 +1,6 @@
 macgifer = macgifer || {};
-macgifer.extensions = macgifer.extensions || [];
+macgifer.extensions = macgifer.extensions || {};
+macgifer.extensions.active = macgifer.extensions.active || [];
 
 macgifer.App = function () {
   this.events_ = {};
@@ -11,9 +12,9 @@ macgifer.App = function () {
   this.interval_ = null;
   this.canvas_ = this.createCanvas_();
   this.video_ = document.getElementById('camera');
-  var extensions = macgifer.extensions.slice();
   var loadExtension = this.loadExtension_.bind(this);
-  macgifer.extensions = {'push': loadExtension};
+  var extensions = macgifer.extensions.active.slice();
+  macgifer.extensions.active = {'push': loadExtension};
   extensions.forEach(loadExtension);
 
   this.worker_ = new Worker('js/worker.js');

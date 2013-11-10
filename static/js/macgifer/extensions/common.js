@@ -1,5 +1,5 @@
-window.macgifer = window.macgifer || {};
-macgifer.extensions = macgifer.extensions || [];
+macgifer = macgifer || {};
+macgifer.extensions = macgifer.extensions || {};
 
 macgifer.extensions.getLines = function(context, text, width) {
   var words = text.replace(/^\s+|\s+$/g, '').split(' ');
