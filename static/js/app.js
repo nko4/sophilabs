@@ -1,5 +1,6 @@
 $(function() {
 
+  var date = null;
   var frameRate = 1;
   var width = 320;
   var height = 240;
@@ -10,9 +11,15 @@ $(function() {
       .attr('href', window.location.origin + '/watch/' + data.id + '.gif')
       .text('Click here!');
   });
+  socket.on('frame_received', function(){
+    var end = new Date().getTime();
+    console.log("time elapsed: " + (end - date)/1000);
+  });
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
+    date = new Date().getTime();
+    console.log("got frame: " + frame.length);
     socket.emit('frame', frame);
   });
 

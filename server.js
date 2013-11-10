@@ -76,6 +76,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('frame', function(data) {
     client.publish('frame.' + gifId, data);
+    socket.emit('frame_received', '');
   });
 
   socket.on('disconnect', function() {
