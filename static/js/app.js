@@ -1,20 +1,11 @@
 $(function() {
-
   var date = null;
-  var frameRate = 1;
-  var width = 240;
-  var height = 180;
 
   var url = 'ws://' + window.location.hostname;
   if (window.location.port) {
       url += ':' + window.location.port;
   }
   var socket = new WebSocket(url + '/socket');
-
-  var EVT_FRAME = 1;
-  var EVT_DISCONNECT = 2;
-  var EVT_NEW_ID = 3;
-  var EVT_FRAME_RECEIVED = 4;
 
   socket.onopen = function() {
       console.log('open');
@@ -29,13 +20,13 @@ $(function() {
     var evt = data[0].charCodeAt(0);
     var data = data.substr(1);
 
-    if (evt == EVT_NEW_ID) {
+    if (evt == common.events.EVT_NEW_ID) {
       $('.url a')
         .attr('href', window.location.origin + '/watch/' + data + '.gif')
         .text('Click here!');
-    } else if (evt == EVT_FRAME_RECEIVED) {
+    } else if (evt == common.events.EVT_FRAME_RECEIVED) {
       var end = new Date().getTime();
-      console.log("time elapsed: " + (end - date)/1000);
+      console.log("time elapsed: " + (end - date) / 1000);
     }
   };
 
@@ -44,16 +35,17 @@ $(function() {
     var frame = e.data;
     date = new Date().getTime();
     console.log("got frame: " + frame.length);
-    socket.send(String.fromCharCode(EVT_FRAME) + frame);
+    socket.send(String.fromCharCode(common.events.EVT_FRAME) + frame);
   });
 
   var video = $('video')[0];
-  video.width = width;
-  video.height = height;
+  video.width = common.WIDTH;
+  video.height = common.HEIGHT;
 
   var canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = common.WIDTH;
+  canvas.height = common.HEIGHT;
+
   var context = canvas.getContext('2d');
   context.translate(canvas.width, 0);
   context.scale(-1, 1);
@@ -64,16 +56,14 @@ $(function() {
     renderTimer = setInterval(function() {
       context.drawImage(video, 0, 0, video.width, video.height);
       onFrame(context);
-    }, Math.round(1000 / frameRate));
-  }, function(err){
+    }, Math.round(1000 / common.FRAMERATE));
+  }, function(err) {
     console.log(err);
   }); 
 
   var onFrame = function(context) {
-    var imageData = context.getImageData(0, 0, width, height);
+    var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     worker.postMessage({
-      width: width,
-      height: height,
       imageData: imageData.data,
     });
   };

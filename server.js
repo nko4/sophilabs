@@ -8,6 +8,7 @@ var fs = require('fs');
 var ws = require('ws');
 
 var GIFEncoder = require('./gif/GIFEncoder.js');
+var common = require('./common.js')
 
 var app = express();
 var server = http.createServer(app);
@@ -53,25 +54,20 @@ app.get('/canvas', function(req, res){
   res.render('canvas.jade', {});
 });
 
-var EVT_FRAME = 1;
-var EVT_DISCONNECT = 2;
-var EVT_NEW_ID = 3;
-var EVT_FRAME_RECEIVED = 4;
-
 sockets.on('connection', function(socket) {
   var gifId = '';
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for( var i=0; i < 5; i++ )
         gifId += possible.charAt(Math.floor(Math.random() * possible.length));
 
-  socket.send(String.fromCharCode(EVT_NEW_ID) + gifId);
+  socket.send(String.fromCharCode(common.events.EVT_NEW_ID) + gifId);
 
   socket.on('message', function(data) {
       var evt = data[0].charCodeAt(0);
       var data = data.substr(1);
-      if (evt == EVT_FRAME) {
+      if (evt == common.events.EVT_FRAME) {
         client.publish('frame.' + gifId, data);
-        socket.send(String.fromCharCode(EVT_FRAME_RECEIVED));
+        socket.send(String.fromCharCode(common.events.EVT_FRAME_RECEIVED));
       }
   });
 
@@ -82,7 +78,7 @@ sockets.on('connection', function(socket) {
 
 app.get('/watch/:id.gif', function(req, res) {
   var client = redis.createClient();
-  var encoder = new GIFEncoder(240, 180);
+  var encoder = new GIFEncoder(common.WIDTH, common.HEIGHT);
 
   res.setHeader('Content-Type', 'image/gif');
   
@@ -90,7 +86,7 @@ app.get('/watch/:id.gif', function(req, res) {
     res.write(String.fromCharCode(data), 'binary');
   });
 
-  encoder.setFrameRate(20);
+  encoder.setFrameRate(common.RECV_FRAMERATE);
   encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
