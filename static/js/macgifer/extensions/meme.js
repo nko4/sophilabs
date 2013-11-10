@@ -4,21 +4,30 @@ macgifer.extensions.active = macgifer.extensions.active || [];
 
 macgifer.extensions.Meme = function(app) {
   this._app = app;
-  this.fontSize_ = 15;
+  this.fontSize_ = 18;
   this.fontSpace_ = 5;
   this.fontLine_ = 1;
-  this.enabled_ = true;
   
   var panel = app.createExtensionPanel(this);
-  
+  var topInput = document.createElement('input');
+  topInput['type'] = 'text';
+  topInput['placeholder'] = 'Top text';
+  topInput['maxlength'] = 120;
+  panel.appendChild(topInput);
+  var bottomInput = document.createElement('input');
+  bottomInput['type'] = 'text';
+  bottomInput['placeholder'] = 'Bottom text';
+  bottomInput['maxlength'] = 120;
+  panel.appendChild(bottomInput);
   this.panel_ = panel;
-
+  this.topInput_ = topInput;
+  this.bottomInput_ = bottomInput;
   app.on(this.getId(), macgifer.App.EVT_FRAME, this.onFrame_.bind(this));
 };
 
 macgifer.extensions.Meme.ID = 'meme';
 
-macgifer.extensions.Meme.prototype.getId = function(enabled) {
+macgifer.extensions.Meme.prototype.getId = function() {
     return macgifer.extensions.Meme.ID;
 };
 
@@ -26,15 +35,7 @@ macgifer.extensions.Meme.prototype.getTitle = function() {
     return 'Meme';
 };
 
-macgifer.extensions.Meme.prototype.setEnable = function(enabled) {
-    this.enabled_ = enabled;
-};
-
 macgifer.extensions.Meme.prototype.onFrame_ = function(event) {
-  if (!this.enabled_) {
-      return;
-  }
-
   var canvas = event.canvas;
   var context = canvas.getContext('2d');
 
@@ -42,8 +43,8 @@ macgifer.extensions.Meme.prototype.onFrame_ = function(event) {
   var height = canvas.height;
   var center = width / 2;
 
-  var topText = 'TEST TOP';
-  var bottomText = 'TEST BOTTOM';
+  var topText = this.topInput_.value;
+  var bottomText = this.bottomInput_.value;
   
   context.font = 'bold ' + this.fontSize_ + 'px Impact';
   context.textAlign = 'center';

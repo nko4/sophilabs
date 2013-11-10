@@ -161,3 +161,21 @@ video {
     60%  {-webkit-transform: scale(3.0); opacity: 1;}
     100% {-webkit-transform: scale(100.0); opacity: 0;}
 }
+
+/* Extensions Styles */
+
+.extensions .subtitles input[type=text] {
+    width: 100%; 
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing: border-box;
+}
+
+.extensions .meme input[type=text] {
+    width: 100%; 
+    box-sizing: border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing: border-box;
+    text-transform: uppercase;
+    font-family: Impact;
+}
