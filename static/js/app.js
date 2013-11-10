@@ -1,7 +1,7 @@
 $(function() {
 
   var date = null;
-  var frameRate = 1;
+  var frameRate = 0.1;
   var width = 240;
   var height = 180;
   var socket = io.connect('ws://' + window.location.hostname);
