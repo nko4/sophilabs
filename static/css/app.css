@@ -53,8 +53,20 @@ iframe {
     outline: 0;
 }
 
+input#gif-link {
+    width: 220px;
+}
+
+input#twitter-link {
+    width: 62px;
+}
+
 div.url {
     height: 32px;
+}
+
+div.url * {
+    margin: 1px;
 }
 
 .camera {
