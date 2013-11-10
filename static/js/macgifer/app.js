@@ -14,7 +14,7 @@ macgifer.App = function () {
   this.started_ = false;
   this.interval_ = null;
   this.canvas_ = this.createCanvas_();
-  this.video_ = document.getElementById('camera');
+  this.video_ = this.createVideo_();
   var loadExtension = this.loadExtension_.bind(this);
   var extensions = macgifer.extensions.active.slice();
   macgifer.extensions.active = {'push': loadExtension};
@@ -164,13 +164,22 @@ macgifer.App.prototype.getHost_ = function() {
 };
 
 /**
+ * Create video.
+ */
+macgifer.App.prototype.createVideo_ = function() {
+  var video = document.createElement('video');
+  video.width = common.WIDTH;
+  video.height = common.HEIGHT;
+  video.autoplay = true;
+  return video;
+};
+/**
  * Create canvas.
  */
 macgifer.App.prototype.createCanvas_ = function() {
-  var canvas = document.createElement('canvas');
+  var canvas = document.getElementById('canvas');
   canvas.width = common.WIDTH;
   canvas.height = common.HEIGHT;
-  var context = canvas.getContext('2d');
   return canvas;
 };
 
@@ -179,7 +188,7 @@ macgifer.App.prototype.createCanvas_ = function() {
  */
 macgifer.App.prototype.startRecording_ = function() {
   this.initializeCamera(function(){
-    var elements = document.querySelectorAll('.camera video, .camera .url');
+    var elements = document.querySelectorAll('.camera canvas, .camera .url');
     for (var i = 0; i < elements.length; i++) {
       elements[i].style.display = 'block';
     }
@@ -197,6 +206,7 @@ macgifer.App.prototype.initializeCamera = function(callback) {
     that.video_.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
     if (!this.started_) {
       that.start();
+      setInterval(that.updateCanvas_.bind(that), 200);
     }
     callback();
   }, function(err) {
@@ -225,27 +235,34 @@ macgifer.App.prototype.stop = function() {
 };
 
 /**
+ * Update the canvas context with video and apply extensions
+ */
+macgifer.App.prototype.updateCanvas_ = function() {
+  var extensions = this.extensions_;
+  var canvas = this.canvas_;
+  var context = canvas.getContext('2d');
+  context.translate(canvas.width, 0);
+  context.scale(-1, 1);
+  context.drawImage(this.video_, 0, 0, this.video_.width, this.video_.height);
+  context.translate(canvas.width, 0);
+  context.scale(-1, 1);
+  this.events_[macgifer.App.EVT_FRAME].forEach(function(definition){
+    if (extensions[definition.id].enable) {
+      try {
+        definition.callback({canvas: canvas});
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  });
+};
+
+/**
  * Handle frame.
  */
 macgifer.App.prototype.onFrame_ = function() {
   if (this.started_) {
-    var extensions = this.extensions_;
-    var canvas = this.canvas_;
-    var context = canvas.getContext('2d');
-    context.translate(canvas.width, 0);
-    context.scale(-1, 1);
-    context.drawImage(this.video_, 0, 0, this.video_.width, this.video_.height);
-    context.translate(canvas.width, 0);
-    context.scale(-1, 1);
-    this.events_[macgifer.App.EVT_FRAME].forEach(function(definition){
-      if (extensions[definition.id].enable) {
-        try {
-          definition.callback({canvas: canvas});
-        } catch(e) {
-          console.log(e);
-        }  
-      }
-    });
+    var context = this.canvas_.getContext('2d');
     var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     this.worker_.postMessage({
       imageData: imageData.data,
