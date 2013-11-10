@@ -7,8 +7,9 @@ $(function() {
 
   var url = 'ws://' + window.location.hostname;
   if (window.location.port) {
+      url += ':' + window.location.port;
   }
-  var socket = new WebSocket('ws://' + window.location.hostname + ':8000/socket');
+  var socket = new WebSocket(url + '/socket');
 
   var EVT_FRAME = 1;
   var EVT_DISCONNECT = 2;
