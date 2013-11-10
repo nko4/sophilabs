@@ -1,28 +1,51 @@
 $(function() {
+  var date = null;
 
-  var frameRate = 1;
-  var width = 320;
-  var height = 240;
-  var socket = io.connect('ws://' + window.location.hostname);
+  var url = 'ws://' + window.location.hostname;
+  if (window.location.port) {
+      url += ':' + window.location.port;
+  }
+  var socket = new WebSocket(url + '/socket');
 
-  socket.on('new_id', function(data){
-    $('.url a')
-      .attr('href', window.location.origin + '/watch/' + data.id + '.gif')
-      .text('Click here!');
-  });
+  socket.onopen = function() {
+      console.log('open');
+  };
+
+  socket.onerror = function(err) {
+      console.log(err);
+  };
+
+  socket.onmessage = function(message) {
+    var data = message.data;
+    var evt = data[0].charCodeAt(0);
+    var data = data.substr(1);
+
+    if (evt == common.events.EVT_NEW_ID) {
+      $('.url a')
+        .attr('href', window.location.origin + '/watch/' + data + '.gif')
+        .text('Click here!');
+    } else if (evt == common.events.EVT_FRAME_RECEIVED) {
+      var end = new Date().getTime();
+      console.log("time elapsed: " + (end - date) / 1000);
+    }
+  };
+
   var worker = new Worker('js/worker.js');
   worker.addEventListener('message', function(e) {
     var frame = e.data;
-    socket.emit('frame', frame);
+    date = new Date().getTime();
+    console.log("got frame: " + frame.length);
+    socket.send(String.fromCharCode(common.events.EVT_FRAME) + frame);
   });
 
   var video = $('video')[0];
-  video.width = width;
-  video.height = height;
+  video.width = common.WIDTH;
+  video.height = common.HEIGHT;
 
   var canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = common.WIDTH;
+  canvas.height = common.HEIGHT;
+
   var context = canvas.getContext('2d');
   context.translate(canvas.width, 0);
   context.scale(-1, 1);
@@ -36,16 +59,14 @@ $(function() {
           window.draw(context, video.width, video.height);
       }
       onFrame(context);
-    }, Math.round(1000 / frameRate));
-  }, function(err){
+    }, Math.round(1000 / common.FRAMERATE));
+  }, function(err) {
     console.log(err);
   }); 
 
   var onFrame = function(context) {
-    var imageData = context.getImageData(0, 0, width, height);
+    var imageData = context.getImageData(0, 0, common.WIDTH, common.HEIGHT);
     worker.postMessage({
-      width: width,
-      height: height,
       imageData: imageData.data,
     });
   };
