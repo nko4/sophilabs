@@ -75,7 +75,16 @@ div.url {
 
 .extensions .extension {
     border: 3px ridge #fff;
-    margin-bottom: 3px;
+    margin: 4px 0;
+    padding: 2px;
+}
+
+.extensions .extension .header h4 {
+    margin: 2px 0;
+}
+
+.extensions .extension .header .toolbar {
+    float: right;
 }
 
 video {
