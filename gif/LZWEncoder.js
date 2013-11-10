@@ -141,7 +141,7 @@ function LZWEncoder(width, height, pixels, colorDepth) {
     remaining = width * height; // reset navigation variables
     curPixel = 0;
     compress(initCodeSize + 1, outs); // compress and write the pixel data
-    outs.writeByte(0); // write block terminator
+    outs.writeByte(0x07); // write block terminator
   }
 
   // Flush the packet to disk, and reset the accumulator
