@@ -29,9 +29,10 @@ ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
 
 ## How does it work?
 ```
-        Browser                  Node.js server                  Browser
-     (broadcaster)                      .                       (watcher)
-           .                            |                           .
+        Browser                      Node.js                 Browser/phone
+     (broadcaster)                    server               mplayer/microwave
+           .                            .                       (watcher)
+           |                            |                           .
            |--.                         |                           |
            |  | Get webcam frame        |<--------------------------|
            |  | (WebRTC)                |--.     HTTP Request       |
@@ -40,9 +41,13 @@ ssh -i ./id_deploy root@sophilabs.2013.nodeknockout.com
            |  | Draw on                 |  | (GIFEncoder)           |
            |  | HTML5 canvas            |  |                        |
            |<-`                         |<-`                        |
-           |--.                         |-------------------------->|
-           |  | Encode frame            |       Write header        |
-           |  | (GIFEncoder)            |        to response        |
+ 	   |--.                         |-------------------------->|
+           |  | Apply                   |       Write header        |
+           |  | extensions              |        to response        |
+   	   |<-`                         |                           |
+           |--.                         |                           |
+           |  | Encode frame            |                           |
+           |  | (GIFEncoder)            |                           |
            |<-`                         |                           |
            |--------------------------->|--.                        |
            |         Send frame         |  | Publish to             |
