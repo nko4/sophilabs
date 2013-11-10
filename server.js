@@ -42,7 +42,7 @@ app.configure(function() {
 });
 
 /**
- * Index
+ * Redirect to index.htm
  */
 app.get('/', function(req, res) {
   res.redirect('/index.htm');
@@ -92,7 +92,6 @@ app.get('/watch/:id.gif', function(req, res) {
     res.write(String.fromCharCode(data), 'binary');
   });
   encoder.setFrameRate(common.RECV_FRAMERATE);
-  encoder.setRepeat(-1);
   encoder.writeHeader();
   encoder.writeLSD(); // logical screen descriptior
   encoder.writeGlobalPalette();
