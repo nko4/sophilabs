@@ -2,7 +2,7 @@
 
 ![Vote KO widget](http://f.cl.ly/items/1n3g0W0F0G3V0i0d0321/Screen%20Shot%202012-11-04%20at%2010.01.36%20AM.png)
 
-In a divided world, streaming formats are a matter of inclusion. GIF was introduced by CompuServe in 1987, they didn't know how powerful it was going to be. 26 years later, using NodeJS together with Redis, WebRTC, websockets and HTML5, MacGifer introduces GIF-based streaming, making it possible for Internet Explorer 6.0 to be part of society once again.
+In a divided world, streaming formats are a matter of inclusion. GIF was introduced by CompuServe in 1987, they didn't know how powerful it was going to be. 26 years later, using NodeJS together with Redis, WebRTC, websockets, webworkers and HTML5, MacGifer introduces GIF-based streaming, making it possible for Internet Explorer 6.0 to be part of society once again.
 
 ## Requirements
 ```sh
